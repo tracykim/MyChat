@@ -58,6 +58,7 @@ public:
 	MYSQL_RES* QueryData(const char* sql);
 	bool hasData(const char* sql);
 
+	// 
 	// 打印结果集
 	void PrintQueryRes();
 

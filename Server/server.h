@@ -13,7 +13,7 @@ public:
 	server();
 	void init();
 	void process();
-
+	void processSingleChat();
 private:
 	int listener;//监听套接字
 	sockaddr_in  serverAddr;//IPV4的地址方式

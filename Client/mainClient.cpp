@@ -6,7 +6,7 @@
 #pragma comment(lib, "ws2_32.lib")  // 链接到WS2_32.lib
 
 using namespace std;
-/*
+
 int main()
 {
 	// 1、用户登录
@@ -17,5 +17,5 @@ int main()
 	
 
 	return 0;
-}*/
+}
 

@@ -4,7 +4,7 @@
 
 client::client()
 {
-	user = 0;
+	m_handle = 0;
 	writing = 0;
 	serverAddr.sin_family = PF_INET;
 	serverAddr.sin_port = SERVER_PORT;
@@ -16,16 +16,16 @@ void client::init()
 	WSADATA   wsaData;
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-	user = socket(AF_INET, SOCK_STREAM, 0);//采用ipv4,TCP传输，成功时返回非负数socket描述符
+	m_handle = socket(AF_INET, SOCK_STREAM, 0);//采用ipv4,TCP传输，成功时返回非负数socket描述符
 
-	if (user <= 0)
+	if (m_handle <= 0)
 	{
 		perror("establish client faild");
 		printf("Error at socket(): %ld\n", WSAGetLastError());
 		exit(1);
 	};
 	printf("establish succesfully\n");//创建成功，阻塞式的等待服务器连接
-	if (connect(user, (const sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
+	if (connect(m_handle, (const sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
 	{
 		perror("connect to server faild");
 		printf("Error at socket(): %ld\n", WSAGetLastError());
@@ -37,17 +37,38 @@ void client::init()
 void client::process()
 {
 	char recvbuf[1024];
+	char name[1024];
+	char pwd[1024];
+
 	fd_set fdread, fedwrite;
 	FD_ZERO(&fdread);//将fdread清零
 	FD_ZERO(&fedwrite);//将fedwrite清零
 
 	init();
 
+	printf("欢迎来到我的聊天室，请登录.\n");
+	printf("用户名：");
+	scanf("%s", &name);
+	printf("密码：");
+	scanf("%s", &pwd);
+
+	/// 登录
+	while (!m_login.loginSuccess(name, pwd)) {
+		printf("请重新输入.\n");
+		printf("用户名：");
+		scanf("%s", &name);
+		printf("密码：");
+		scanf("%s", &pwd);
+	}
+	
+	printf("登录成功！\n");
+	printHelp();
+
 	while (1)
 	{
-		FD_SET(user, &fdread);
+		FD_SET(m_handle, &fdread);
 		if (writing == 0)
-			FD_SET(user, &fedwrite);
+			FD_SET(m_handle, &fedwrite);
 		struct timeval timeout = { 1,0 };//每个Select等待1秒
 		switch (select(0, &fdread, &fedwrite, NULL, &timeout))
 		{
@@ -60,9 +81,9 @@ void client::process()
 			break;
 		default:
 		{
-			if (FD_ISSET(user, &fdread))//有待读事件
+			if (FD_ISSET(m_handle, &fdread))//有待读事件
 			{
-				int size = recv(user, recvbuf, sizeof(recvbuf) - 1, 0);
+				int size = recv(m_handle, recvbuf, sizeof(recvbuf) - 1, 0);
 				if (size > 0)
 				{
 					printf("server : %s\n", recvbuf);
@@ -74,7 +95,7 @@ void client::process()
 					exit(1);
 				}
 			}
-			if (FD_ISSET(user, &fedwrite))//有待写事件
+			if (FD_ISSET(m_handle, &fedwrite))//有待写事件
 			{
 				FD_ZERO(&fedwrite);//将fedwrite清零
 				writing = 1;//表示正在写入
@@ -93,6 +114,35 @@ void client::sendata()
 	//char middle[1024];
 
 	std::cin.getline(sendbuf, 1024);//读取一行
-	send(user, sendbuf, sizeof(sendbuf) - 1, 0);
+
+	if (strcmp(sendbuf, "h") == 0)
+	{
+		printHelp();
+	}
+	else if (strcmp(sendbuf, "lf") == 0) // 查看所有联系人
+	{
+		m_login.QueryFriendList("James");
+	}
+	else if (strcmp(sendbuf, "lg") == 0) // 查看所有联系人
+	{
+		m_login.QueryFriendList("James");
+	}
+	else if (strcmp(sendbuf, "q") == 0)
+	{
+		/// TODO退出客户端
+	}
+	else
+	{	
+		send(m_handle, sendbuf, sizeof(sendbuf) - 1, 0);
+	}
 	writing = 0;
+}
+
+void client::printHelp()
+{
+	printf("h：查看帮助\n");
+	printf("lf：查看好友列表\n");
+	printf("lg：查看群聊列表\n");
+	printf("输入好友或者群聊名字进行聊天，输入c关闭聊天窗口");
+	printf("q：退出客户端\n");
 }

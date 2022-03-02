@@ -7,8 +7,11 @@ public:
 	Login();
 	~Login();
 	bool loginSuccess(char* userName, char* userPwd);
+	void QueryFriendList(char* userName);
+	void QueryGroupList(char* userName);
+
 private:
 	MySQLManager m_sqlManager;
 	ConnectionInfo info;
-	char m_query[128];
+	char m_query[1024];
 };

@@ -54,10 +54,10 @@ MYSQL_RES* MySQLManager::QueryData(const char* sql)
 		cerr << "查询语句执行失败，错误信息为： " << mysql_error(&m_mysql) << endl;
 		return nullptr;
 	}
-	else
-	{
-		cout << "查询语句执行成功！" << endl;
-	}
+	//else
+	//{
+	//	cout << "查询语句执行成功！" << endl;
+	//}
 
 	// 存储查询结果
 	m_res = mysql_store_result(&m_mysql);
@@ -89,21 +89,23 @@ void MySQLManager::PrintQueryRes()
 	//存字段名二维数组
 	char fieldName[64][32];
 
+	/// jinye 不输出表格信息
 	// 获取字段名
-	for (int i = 0; field = mysql_fetch_field(m_res); ++i)
-	{
-		strcpy_s(fieldName[i], field->name);
-	}
+	//for (int i = 0; field = mysql_fetch_field(m_res); ++i)
+	//{
+	//	strcpy_s(fieldName[i], field->name);
+	//}
 
-	// 获取列数
+	//// 获取列数
+	//int columns = mysql_num_fields(m_res);
+	//for (int i = 0; i < columns; ++i)
+	//{
+	//	// 使用C语言的printf格式化更方便一点
+	//	printf("%10s\t", fieldName[i]);
+	//}
+	//cout << endl;
+
 	int columns = mysql_num_fields(m_res);
-	for (int i = 0; i < columns; ++i)
-	{
-		// 使用C语言的printf格式化更方便一点
-		printf("%10s\t", fieldName[i]);
-	}
-	cout << endl;
-
 	MYSQL_ROW row;
 	while (row = mysql_fetch_row(m_res))
 	{
@@ -112,7 +114,7 @@ void MySQLManager::PrintQueryRes()
 			printf("%10s\t", row[i]);
 		}
 
-		cout << endl;
+		//cout << endl;
 	}
-
+	cout << endl;
 }
