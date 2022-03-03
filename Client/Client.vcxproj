@@ -136,7 +136,9 @@
   <ItemGroup>
     <ClInclude Include="client.h" />
     <ClInclude Include="login.h" />
+    <ClInclude Include="mysql_config.h" />
     <ClInclude Include="MySQLManager.h" />
+    <ClInclude Include="server_config.h" />
     <ClInclude Include="user.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

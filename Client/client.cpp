@@ -8,7 +8,7 @@ client::client()
 	writing = 0;
 	serverAddr.sin_family = PF_INET;
 	serverAddr.sin_port = SERVER_PORT;
-	serverAddr.sin_addr.s_addr = inet_addr(SERVER_IP);//将字符串类型转换uint32_t
+	serverAddr.sin_addr.s_addr = inet_addr(SERVER_HOST);//将字符串类型转换uint32_t
 }
 
 void client::init()
@@ -31,14 +31,32 @@ void client::init()
 		printf("Error at socket(): %ld\n", WSAGetLastError());
 		exit(1);
 	}
-	printf("connect IP:%s  Port:%d succesfully\n", SERVER_IP, SERVER_PORT);//创建成功
+	printf("connect IP:%s  Port:%d succesfully\n", SERVER_HOST, SERVER_PORT);//创建成功
 }
 
 void client::process()
 {
+	/// 登录	
+	printf("欢迎来到我的聊天室，请登录.\n");
+	printf("用户名：");
+	scanf("%s", &m_user.m_userName);
+	printf("密码：");
+	scanf("%s", &m_user.m_userPwd);
+
+	while (!m_login.loginSuccess(m_user.m_userName, m_user.m_userPwd)) {
+		printf("请重新输入.\n");
+		printf("用户名：");
+		scanf("%s", &m_user.m_userName);
+		printf("密码：");
+		scanf("%s", &m_user.m_userPwd);
+	}
+
+	printf("登录成功！\n");
+	printHelp();
+
 	char recvbuf[1024];
-	char name[1024];
-	char pwd[1024];
+	//char name[128];
+	//char pwd[128];
 
 	fd_set fdread, fedwrite;
 	FD_ZERO(&fdread);//将fdread清零
@@ -46,23 +64,7 @@ void client::process()
 
 	init();
 
-	printf("欢迎来到我的聊天室，请登录.\n");
-	printf("用户名：");
-	scanf("%s", &name);
-	printf("密码：");
-	scanf("%s", &pwd);
-
-	/// 登录
-	while (!m_login.loginSuccess(name, pwd)) {
-		printf("请重新输入.\n");
-		printf("用户名：");
-		scanf("%s", &name);
-		printf("密码：");
-		scanf("%s", &pwd);
-	}
-	
-	printf("登录成功！\n");
-	printHelp();
+	send(m_handle, m_user.m_userName, sizeof(m_user.m_userName) - 1, 0);
 
 	while (1)
 	{
@@ -112,6 +114,28 @@ void client::sendata()
 {
 	char sendbuf[1024];
 	//char middle[1024];
+	/*if (!m_sendLogin) {
+		printf("欢迎来到我的聊天室，请登录.\n");
+		printf("用户名：");
+		scanf("%s", &m_user.m_userName);
+		printf("密码：");
+		scanf("%s", &m_user.m_userPwd);
+
+		/// 登录
+		while (!m_login.loginSuccess(m_user.m_userName, m_user.m_userPwd)) {
+			printf("请重新输入.\n");
+			printf("用户名：");
+			scanf("%s", &m_user.m_userName);
+			printf("密码：");
+			scanf("%s", &m_user.m_userPwd);
+		}
+
+		printf("登录成功！\n");
+		send(m_handle, (char*)&m_user, sizeof(m_user) - 1, 0);
+		m_sendLogin = true;
+		writing = 0;
+		return;
+	}*/
 
 	std::cin.getline(sendbuf, 1024);//读取一行
 
@@ -136,6 +160,7 @@ void client::sendata()
 		send(m_handle, sendbuf, sizeof(sendbuf) - 1, 0);
 	}
 	writing = 0;
+	
 }
 
 void client::printHelp()

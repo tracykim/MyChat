@@ -24,9 +24,10 @@ int main()
 	//MYSQL_RES* res = mysql.QueryData(sql4);
 	//mysql.PrintQueryRes();
 	server ser;
-	//ser.process();
 	ser.processSingleChat();
-
+	/*char info[] =  "Wade hello";
+	char userName[128], message[128];
+	getUserAndMessage(info, userName, message);*/
 	return 0;
 }
 

@@ -1,10 +1,7 @@
 #pragma once
-#include <string>
 
-class User
+struct User
 {
-private:
-	int userID;
-	std::string userName;
-	std::string userPwd;
+	char m_userName[128];
+	char m_userPwd[128];
 };

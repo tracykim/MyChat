@@ -1,11 +1,10 @@
 #pragma once
 // 网络通信头文件
 #include <WinSock.h>
-
 // 引入mysql头文件(比较好的做法是把文件夹拷到工程目录，也可以在vc目录里面设置)
 #include "mysql.h"
 #include <Windows.h>
-
+#include "mysql_config.h"
 // 包含附加依赖项，也可以在工程--属性里面设置
 #pragma comment(lib, "wsock32.lib")
 #pragma comment(lib, "libmysql.lib")
@@ -23,8 +22,8 @@ struct ConnectionInfo
 
 								 // 构造函数，设置一些默认值
 	ConnectionInfo() :
-		host("127.0.0.1"),
-		port(3306),
+		host(HOST),
+		port(PORT),
 		unix_socket(NULL),
 		clientflag(0)
 	{

@@ -9,8 +9,7 @@
 #include "MySQLManager.h"
 #include "login.h"
 #include "user.h"
-#define SERVER_PORT 8888// 服务器端口号
-#define SERVER_IP "127.0.0.1"// 默认服务器端IP地址
+#include "server_config.h"
 using namespace std;
 class client
 {
@@ -25,5 +24,6 @@ private:
 	int writing;
 	sockaddr_in  serverAddr;
 	Login m_login;
+	bool m_sendLogin = false;
 	User m_user;
 };

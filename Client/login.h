@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include "MySQLManager.h"
+#include "mysql_config.h"
+
 using namespace std;
 class Login{
 public:
