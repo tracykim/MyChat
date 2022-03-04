@@ -11,7 +11,7 @@ public:
 	bool loginSuccess(char* userName, char* userPwd);
 	void QueryFriendList(char* userName);
 	void QueryGroupList(char* userName);
-
+	void QueryChatList(char* userName);
 private:
 	MySQLManager m_sqlManager;
 	ConnectionInfo info;

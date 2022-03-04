@@ -32,6 +32,8 @@ void client::init()
 		exit(1);
 	}
 	printf("connect IP:%s  Port:%d succesfully\n", SERVER_HOST, SERVER_PORT);//创建成功
+	//memset(m_user.m_userName, '\0', sizeof(m_user.m_userName));
+	//memset(m_user.m_userPwd, '\0', sizeof(m_user.m_userPwd));
 }
 
 void client::process()
@@ -54,10 +56,7 @@ void client::process()
 	printf("登录成功！\n");
 	printHelp();
 
-	char recvbuf[1024];
-	//char name[128];
-	//char pwd[128];
-
+	
 	fd_set fdread, fedwrite;
 	FD_ZERO(&fdread);//将fdread清零
 	FD_ZERO(&fedwrite);//将fedwrite清零
@@ -65,8 +64,7 @@ void client::process()
 	init();
 
 	send(m_handle, m_user.m_userName, sizeof(m_user.m_userName) - 1, 0);
-
-	while (1)
+	while (!m_quit)
 	{
 		FD_SET(m_handle, &fdread);
 		if (writing == 0)
@@ -85,6 +83,8 @@ void client::process()
 		{
 			if (FD_ISSET(m_handle, &fdread))//有待读事件
 			{
+				char recvbuf[1024];
+				memset(recvbuf, '\0', sizeof(recvbuf));
 				int size = recv(m_handle, recvbuf, sizeof(recvbuf) - 1, 0);
 				if (size > 0)
 				{
@@ -113,54 +113,27 @@ void client::process()
 void client::sendata()
 {
 	char sendbuf[1024];
-	//char middle[1024];
-	/*if (!m_sendLogin) {
-		printf("欢迎来到我的聊天室，请登录.\n");
-		printf("用户名：");
-		scanf("%s", &m_user.m_userName);
-		printf("密码：");
-		scanf("%s", &m_user.m_userPwd);
-
-		/// 登录
-		while (!m_login.loginSuccess(m_user.m_userName, m_user.m_userPwd)) {
-			printf("请重新输入.\n");
-			printf("用户名：");
-			scanf("%s", &m_user.m_userName);
-			printf("密码：");
-			scanf("%s", &m_user.m_userPwd);
-		}
-
-		printf("登录成功！\n");
-		send(m_handle, (char*)&m_user, sizeof(m_user) - 1, 0);
-		m_sendLogin = true;
-		writing = 0;
-		return;
-	}*/
-
+	memset(sendbuf, '\0', sizeof(sendbuf));
 	std::cin.getline(sendbuf, 1024);//读取一行
 
 	if (strcmp(sendbuf, "h") == 0)
 	{
 		printHelp();
 	}
-	else if (strcmp(sendbuf, "lf") == 0) // 查看所有联系人
+	else if (strcmp(sendbuf, "l") == 0) // 查看好友和群列表
 	{
-		m_login.QueryFriendList("James");
-	}
-	else if (strcmp(sendbuf, "lg") == 0) // 查看所有联系人
-	{
-		m_login.QueryFriendList("James");
+		m_login.QueryChatList(m_user.m_userName);
 	}
 	else if (strcmp(sendbuf, "q") == 0)
 	{
-		/// TODO退出客户端
+		m_quit = true;
 	}
 	else
 	{	
-		send(m_handle, sendbuf, sizeof(sendbuf) - 1, 0);
+		if(messageIsVaild()) // 查看输入信息的合法性
+			send(m_handle, sendbuf, sizeof(sendbuf) - 1, 0);
 	}
-	writing = 0;
-	
+	writing = 0;	
 }
 
 void client::printHelp()
@@ -170,4 +143,9 @@ void client::printHelp()
 	printf("lg：查看群聊列表\n");
 	printf("输入好友或者群聊名字进行聊天，输入c关闭聊天窗口");
 	printf("q：退出客户端\n");
+}
+
+bool client::messageIsVaild()
+{
+	return true;
 }

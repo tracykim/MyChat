@@ -19,6 +19,7 @@ public:
 	void process();
 	void sendata();
 	void printHelp();
+	bool messageIsVaild();
 private:
 	int m_handle; //¿Í»§¶ËÌ×½Ó×Ö£¨¾ä±ú£©
 	int writing;
@@ -26,4 +27,5 @@ private:
 	Login m_login;
 	bool m_sendLogin = false;
 	User m_user;
+	bool m_quit = false;
 };
