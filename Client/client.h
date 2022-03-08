@@ -20,6 +20,8 @@ public:
 	void sendata();
 	void printHelp();
 	bool messageIsVaild();
+	void printFrinedList();
+	void printGroupList();
 private:
 	int m_handle; //¿Í»§¶ËÌ×½Ó×Ö£¨¾ä±ú£©
 	int writing;
@@ -28,4 +30,6 @@ private:
 	bool m_sendLogin = false;
 	User m_user;
 	bool m_quit = false;
+	std::vector<string> m_friendList;
+	std::vector<string> m_groupList;
 };

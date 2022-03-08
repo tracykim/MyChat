@@ -5,6 +5,8 @@
 #include "mysql.h"
 #include <Windows.h>
 #include "mysql_config.h"
+#include <vector>
+#include <string>
 // 包含附加依赖项，也可以在工程--属性里面设置
 #pragma comment(lib, "wsock32.lib")
 #pragma comment(lib, "libmysql.lib")
@@ -60,6 +62,7 @@ public:
 	// 
 	// 打印结果集
 	void PrintQueryRes();
+	void SaveQueryRes(std::vector<std::string>& resList);
 
 private:
 	MYSQL m_mysql;                // mysql连接

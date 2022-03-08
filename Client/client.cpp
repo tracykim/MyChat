@@ -38,6 +38,12 @@ void client::init()
 
 void client::process()
 {
+	fd_set fdread, fedwrite;
+	FD_ZERO(&fdread);//将fdread清零
+	FD_ZERO(&fedwrite);//将fedwrite清零
+
+	init();
+
 	/// 登录	
 	printf("欢迎来到我的聊天室，请登录.\n");
 	printf("用户名：");
@@ -56,12 +62,9 @@ void client::process()
 	printf("登录成功！\n");
 	printHelp();
 
-	
-	fd_set fdread, fedwrite;
-	FD_ZERO(&fdread);//将fdread清零
-	FD_ZERO(&fedwrite);//将fedwrite清零
-
-	init();
+	/// 存储用户的好友和群列表
+	m_login.QueryFriendList(m_user.m_userName, m_friendList);
+	m_login.QueryGroupList(m_user.m_userName, m_groupList);
 
 	send(m_handle, m_user.m_userName, sizeof(m_user.m_userName) - 1, 0);
 	while (!m_quit)
@@ -116,15 +119,88 @@ void client::sendata()
 	memset(sendbuf, '\0', sizeof(sendbuf));
 	std::cin.getline(sendbuf, 1024);//读取一行
 
-	if (strcmp(sendbuf, "h") == 0)
+	if (strcmp(sendbuf, "--h") == 0 || strcmp(sendbuf, "--help") == 0)
 	{
 		printHelp();
 	}
-	else if (strcmp(sendbuf, "l") == 0) // 查看好友和群列表
+	else if (strcmp(sendbuf, "--ls") == 0) // 查看好友和群列表
 	{
-		m_login.QueryChatList(m_user.m_userName);
+		//m_login.QueryChatList(m_user.m_userName);
+		printFrinedList();
+		printGroupList();
 	}
-	else if (strcmp(sendbuf, "q") == 0)
+	else if (strcmp(sendbuf, "--addu") == 0) // 添加好友
+	{
+		printf("请输入要添加的好友：");
+		char toUserName[128];
+		memset(toUserName, '\0', sizeof(toUserName));
+		scanf("%s", &toUserName);
+		if(m_login.addFriend(m_user.m_userName, toUserName))
+			m_friendList.push_back(toUserName);
+	}
+	else if (strcmp(sendbuf, "--addg") == 0)// 添加群聊
+	{
+		printf("请输入要添加的群名：");
+		char groupName[128];
+		scanf("%s", &groupName);
+		if(m_login.addGroup(groupName, m_user.m_userName))
+			m_groupList.push_back(groupName);
+	}
+	else if (strcmp(sendbuf, "--createg") == 0)// 创建群聊
+	{
+		printf("请输入要创建的群名：");
+		char groupName[128];
+		scanf("%s", &groupName);
+		printFrinedList();
+		printf("请输入要添加的群成员编号（换行结束）：");
+		std::vector<string> addList;
+		addList.push_back(m_user.m_userName);
+		int idx;
+		while (cin>>idx)
+		{
+			if (idx<0 || idx>m_friendList.size() - 1)
+				printf("输入编号无效！\n");
+			else
+				addList.push_back(m_friendList[idx]);
+			if (cin.get() == '\n')
+				break;
+		}
+		if (addList.size() < 3)
+		{
+			printf("创建群至少选择三个成员!\n");
+		}
+		if (m_login.createGroup(groupName, addList))
+			m_groupList.push_back(groupName);
+	}
+	else if (strcmp(sendbuf, "--delu") == 0) // 删除好友
+	{
+		printFrinedList();
+		printf("请输入要删除的好友编号：");
+		int delNum;
+		scanf("%d", &delNum);
+		if (delNum<0 || delNum>m_friendList.size() - 1)
+			printf("输入编号无效！\n");
+		else
+		{
+			if(m_login.delFriend(m_user.m_userName, m_friendList[delNum].c_str()))
+				m_friendList.erase(m_friendList.begin() + delNum);
+		}
+	}
+	else if (strcmp(sendbuf, "--delg") == 0) // 删除群聊
+	{
+		printGroupList();
+		printf("请输入要删除的群聊编号：");
+		int delNum;
+		scanf("%d", &delNum);
+		if (delNum<0 || delNum>m_groupList.size() - 1)
+			printf("输入编号无效！");
+		else
+		{
+			if(m_login.delGroup(m_groupList[delNum].c_str(), m_user.m_userName))
+				m_groupList.erase(m_groupList.begin() + delNum);
+		}
+	}
+	else if (strcmp(sendbuf, "--q") == 0)
 	{
 		m_quit = true;
 	}
@@ -138,14 +214,38 @@ void client::sendata()
 
 void client::printHelp()
 {
-	printf("h：查看帮助\n");
-	printf("lf：查看好友列表\n");
-	printf("lg：查看群聊列表\n");
-	printf("输入好友或者群聊名字进行聊天，输入c关闭聊天窗口");
-	printf("q：退出客户端\n");
+	printf("--h：查看帮助\n");
+	printf("--ls：查看好友和群列表\n");
+	printf("--addu：添加好友\n");
+	printf("--addg：添加群聊\n");
+	printf("--createg：创建群聊\n");
+	printf("--delu：删除好友\n");
+	printf("--delg：删除群聊\n");
+	//printf("输入好友或者群聊名字进行聊天，输入c关闭聊天窗口");
+	printf("--q：退出客户端\n\n");
 }
 
 bool client::messageIsVaild()
 {
 	return true;
+}
+
+void client::printFrinedList()
+{
+	printf("好友列表：");
+	for (int i = 0; i < m_friendList.size();i++)
+	{
+		printf("\t%d：%5s", i, m_friendList[i].c_str());
+	}
+	printf("\n");
+}
+
+void client::printGroupList()
+{
+	printf("群聊列表：");
+	for (int i = 0; i < m_groupList.size(); i++)
+	{
+		printf("\t%d：%5s", i, m_groupList[i].c_str());
+	}
+	printf("\n");
 }
