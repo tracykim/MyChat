@@ -1,21 +1,17 @@
-//Client
+ï»¿//Client
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #include "client.h"
 #include "MySQLManager.h"
-#pragma comment(lib, "ws2_32.lib")  // Á´½Óµ½WS2_32.lib
+#pragma comment(lib, "ws2_32.lib")  // é“¾æŽ¥åˆ°WS2_32.lib
 
 using namespace std;
 
 int main()
 {
-	// 1¡¢ÓÃ»§µÇÂ¼
-
-	// µÇÂ¼¿Í»§¶Ë
+	// ç™»å½•å®¢æˆ·ç«¯
 	client user;
 	user.process();
-	
-
 	return 0;
 }
 

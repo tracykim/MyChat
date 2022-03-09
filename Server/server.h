@@ -1,11 +1,11 @@
 #pragma once
-#include <winsock2.h> 
+//#include <Winsock2.h> 
+#include "login.h"
+#include "server_config.h"
 #include <stdio.h>
 #include <vector>
-#include <ws2tcpip.h>//定义socklen_t
-#include <vector>
 #include <unordered_map>
-#include "server_config.h"
+#include <ws2tcpip.h>//定义socklen_t
 
 void getUserAndMessage(const char buf[1024], char userName[128], char message[128]);
 
@@ -26,7 +26,7 @@ class server
 public:
 	server();
 	void init();
-	void processSingleChat();
+	void process();
 private:
 	int listener;//监听套接字
 	sockaddr_in  serverAddr;//IPV4的地址方式
@@ -35,4 +35,10 @@ private:
 	//std::vector<bool> m_recvLogins;
 	std::vector<ClientInfo> m_clientInfo;
 	std::unordered_map<std::string, int> m_name_arr; //用户名-创建的套接字
+
+	Login m_db;
+	std::vector<ClientInfo> m_groupList; // 群聊列表
+	void processMessage(const char* buf, int clinetIdx);
+	bool sendMessage(const char* message, std::string fromClinetName, std::string toClinetName);
+	bool sendMessageFromGroup(const char* message, const char* groupName, std::string fromClinetName, std::string toClinetName);
 };

@@ -1,11 +1,10 @@
-#pragma once
-#include <winsock2.h>
+ï»¿#pragma once
+//#include <winsock2.h>
 #include <stdio.h>
 #include <thread>
 #include <iostream>
 #include <conio.h>
-#include <winsock2.h> 
-#include <ws2tcpip.h>//¶¨Òåsocklen_t
+#include <ws2tcpip.h>//å®šä¹‰socklen_t
 #include "MySQLManager.h"
 #include "login.h"
 #include "user.h"
@@ -23,7 +22,7 @@ public:
 	void printFrinedList();
 	void printGroupList();
 private:
-	int m_handle; //¿Í»§¶ËÌ×½Ó×Ö£¨¾ä±ú£©
+	int m_handle; //å®¢æˆ·ç«¯å¥—æ¥å­—ï¼ˆå¥æŸ„ï¼‰
 	int writing;
 	sockaddr_in  serverAddr;
 	Login m_login;

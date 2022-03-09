@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+ï»¿#define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "client.h"
 
@@ -8,7 +8,7 @@ client::client()
 	writing = 0;
 	serverAddr.sin_family = PF_INET;
 	serverAddr.sin_port = SERVER_PORT;
-	serverAddr.sin_addr.s_addr = inet_addr(SERVER_HOST);//½«×Ö·û´®ÀàĞÍ×ª»»uint32_t
+	serverAddr.sin_addr.s_addr = inet_addr(SERVER_HOST);//å°†å­—ç¬¦ä¸²ç±»å‹è½¬æ¢uint32_t
 }
 
 void client::init()
@@ -16,7 +16,7 @@ void client::init()
 	WSADATA   wsaData;
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-	m_handle = socket(AF_INET, SOCK_STREAM, 0);//²ÉÓÃipv4,TCP´«Êä£¬³É¹¦Ê±·µ»Ø·Ç¸ºÊısocketÃèÊö·û
+	m_handle = socket(AF_INET, SOCK_STREAM, 0);//é‡‡ç”¨ipv4,TCPä¼ è¾“ï¼ŒæˆåŠŸæ—¶è¿”å›éè´Ÿæ•°socketæè¿°ç¬¦
 
 	if (m_handle <= 0)
 	{
@@ -24,14 +24,14 @@ void client::init()
 		printf("Error at socket(): %ld\n", WSAGetLastError());
 		exit(1);
 	};
-	printf("establish succesfully\n");//´´½¨³É¹¦£¬×èÈûÊ½µÄµÈ´ı·şÎñÆ÷Á¬½Ó
+	printf("establish succesfully\n");//åˆ›å»ºæˆåŠŸï¼Œé˜»å¡å¼çš„ç­‰å¾…æœåŠ¡å™¨è¿æ¥
 	if (connect(m_handle, (const sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
 	{
 		perror("connect to server faild");
 		printf("Error at socket(): %ld\n", WSAGetLastError());
 		exit(1);
 	}
-	printf("connect IP:%s  Port:%d succesfully\n", SERVER_HOST, SERVER_PORT);//´´½¨³É¹¦
+	printf("connect IP:%s  Port:%d succesfully\n", SERVER_HOST, SERVER_PORT);//åˆ›å»ºæˆåŠŸ
 	//memset(m_user.m_userName, '\0', sizeof(m_user.m_userName));
 	//memset(m_user.m_userPwd, '\0', sizeof(m_user.m_userPwd));
 }
@@ -39,30 +39,31 @@ void client::init()
 void client::process()
 {
 	fd_set fdread, fedwrite;
-	FD_ZERO(&fdread);//½«fdreadÇåÁã
-	FD_ZERO(&fedwrite);//½«fedwriteÇåÁã
+	FD_ZERO(&fdread);//å°†fdreadæ¸…é›¶
+	FD_ZERO(&fedwrite);//å°†fedwriteæ¸…é›¶
 
 	init();
 
-	/// µÇÂ¼	
-	printf("»¶Ó­À´µ½ÎÒµÄÁÄÌìÊÒ£¬ÇëµÇÂ¼.\n");
-	printf("ÓÃ»§Ãû£º");
+	/// ç™»å½•	
+	printf("æ¬¢è¿æ¥åˆ°æˆ‘çš„èŠå¤©å®¤ï¼Œè¯·ç™»å½•.\n");
+
+	printf("ç”¨æˆ·åï¼š");
 	scanf("%s", &m_user.m_userName);
-	printf("ÃÜÂë£º");
+	printf("å¯†ç ï¼š");
 	scanf("%s", &m_user.m_userPwd);
 
 	while (!m_login.loginSuccess(m_user.m_userName, m_user.m_userPwd)) {
-		printf("ÇëÖØĞÂÊäÈë.\n");
-		printf("ÓÃ»§Ãû£º");
+		printf("è¯·é‡æ–°è¾“å…¥.\n");
+		printf("ç”¨æˆ·åï¼š");
 		scanf("%s", &m_user.m_userName);
-		printf("ÃÜÂë£º");
+		printf("å¯†ç ï¼š");
 		scanf("%s", &m_user.m_userPwd);
 	}
 
-	printf("µÇÂ¼³É¹¦£¡\n");
+	printf("ç™»å½•æˆåŠŸï¼\n");
 	printHelp();
 
-	/// ´æ´¢ÓÃ»§µÄºÃÓÑºÍÈºÁĞ±í
+	/// å­˜å‚¨ç”¨æˆ·çš„å¥½å‹å’Œç¾¤åˆ—è¡¨
 	m_login.QueryFriendList(m_user.m_userName, m_friendList);
 	m_login.QueryGroupList(m_user.m_userName, m_groupList);
 
@@ -72,7 +73,7 @@ void client::process()
 		FD_SET(m_handle, &fdread);
 		if (writing == 0)
 			FD_SET(m_handle, &fedwrite);
-		struct timeval timeout = { 1,0 };//Ã¿¸öSelectµÈ´ı1Ãë
+		struct timeval timeout = { 1,0 };//æ¯ä¸ªSelectç­‰å¾…1ç§’
 		switch (select(0, &fdread, &fedwrite, NULL, &timeout))
 		{
 		case -1:
@@ -84,7 +85,7 @@ void client::process()
 			break;
 		default:
 		{
-			if (FD_ISSET(m_handle, &fdread))//ÓĞ´ı¶ÁÊÂ¼ş
+			if (FD_ISSET(m_handle, &fdread))//æœ‰å¾…è¯»äº‹ä»¶
 			{
 				char recvbuf[1024];
 				memset(recvbuf, '\0', sizeof(recvbuf));
@@ -100,12 +101,12 @@ void client::process()
 					exit(1);
 				}
 			}
-			if (FD_ISSET(m_handle, &fedwrite))//ÓĞ´ıĞ´ÊÂ¼ş
+			if (FD_ISSET(m_handle, &fedwrite))//æœ‰å¾…å†™äº‹ä»¶
 			{
-				FD_ZERO(&fedwrite);//½«fedwriteÇåÁã
-				writing = 1;//±íÊ¾ÕıÔÚĞ´Èë
+				FD_ZERO(&fedwrite);//å°†fedwriteæ¸…é›¶
+				writing = 1;//è¡¨ç¤ºæ­£åœ¨å†™å…¥
 				std::thread sendtask(std::bind(&client::sendata, this));
-				sendtask.detach();//½«×ÓÏß³ÌºÍÖ÷½ø³Ì·ÖÀëÇÒ»¥Ïà²»Ó°Ïì
+				sendtask.detach();//å°†å­çº¿ç¨‹å’Œä¸»è¿›ç¨‹åˆ†ç¦»ä¸”äº’ç›¸ä¸å½±å“
 			}
 			break;
 		}
@@ -117,49 +118,53 @@ void client::sendata()
 {
 	char sendbuf[1024];
 	memset(sendbuf, '\0', sizeof(sendbuf));
-	std::cin.getline(sendbuf, 1024);//¶ÁÈ¡Ò»ĞĞ
+	std::cin.getline(sendbuf, 1024);//è¯»å–ä¸€è¡Œ
 
 	if (strcmp(sendbuf, "--h") == 0 || strcmp(sendbuf, "--help") == 0)
 	{
 		printHelp();
 	}
-	else if (strcmp(sendbuf, "--ls") == 0) // ²é¿´ºÃÓÑºÍÈºÁĞ±í
+	else if (strcmp(sendbuf, "--ls") == 0) // æŸ¥çœ‹å¥½å‹å’Œç¾¤åˆ—è¡¨
 	{
 		//m_login.QueryChatList(m_user.m_userName);
 		printFrinedList();
 		printGroupList();
 	}
-	else if (strcmp(sendbuf, "--addu") == 0) // Ìí¼ÓºÃÓÑ
+	else if (strcmp(sendbuf, "--addu") == 0) // æ·»åŠ å¥½å‹
 	{
-		printf("ÇëÊäÈëÒªÌí¼ÓµÄºÃÓÑ£º");
+		printf("è¯·è¾“å…¥è¦æ·»åŠ çš„å¥½å‹ï¼š");
 		char toUserName[128];
 		memset(toUserName, '\0', sizeof(toUserName));
 		scanf("%s", &toUserName);
-		if(m_login.addFriend(m_user.m_userName, toUserName))
+		if (m_login.addFriend(m_user.m_userName, toUserName))
+		{
 			m_friendList.push_back(toUserName);
+			// ç»™å¥½å‹å‘æ·»åŠ å¥½å‹çš„æ¶ˆæ¯
+
+		}
 	}
-	else if (strcmp(sendbuf, "--addg") == 0)// Ìí¼ÓÈºÁÄ
+	else if (strcmp(sendbuf, "--addg") == 0)// æ·»åŠ ç¾¤èŠ
 	{
-		printf("ÇëÊäÈëÒªÌí¼ÓµÄÈºÃû£º");
+		printf("è¯·è¾“å…¥è¦æ·»åŠ çš„ç¾¤åï¼š");
 		char groupName[128];
 		scanf("%s", &groupName);
 		if(m_login.addGroup(groupName, m_user.m_userName))
 			m_groupList.push_back(groupName);
 	}
-	else if (strcmp(sendbuf, "--createg") == 0)// ´´½¨ÈºÁÄ
+	else if (strcmp(sendbuf, "--createg") == 0)// åˆ›å»ºç¾¤èŠ
 	{
-		printf("ÇëÊäÈëÒª´´½¨µÄÈºÃû£º");
+		printf("è¯·è¾“å…¥è¦åˆ›å»ºçš„ç¾¤åï¼š");
 		char groupName[128];
 		scanf("%s", &groupName);
 		printFrinedList();
-		printf("ÇëÊäÈëÒªÌí¼ÓµÄÈº³ÉÔ±±àºÅ£¨»»ĞĞ½áÊø£©£º");
+		printf("è¯·è¾“å…¥è¦æ·»åŠ çš„ç¾¤æˆå‘˜ç¼–å·ï¼ˆæ¢è¡Œç»“æŸï¼‰ï¼š");
 		std::vector<string> addList;
 		addList.push_back(m_user.m_userName);
 		int idx;
 		while (cin>>idx)
 		{
 			if (idx<0 || idx>m_friendList.size() - 1)
-				printf("ÊäÈë±àºÅÎŞĞ§£¡\n");
+				printf("è¾“å…¥ç¼–å·æ— æ•ˆï¼\n");
 			else
 				addList.push_back(m_friendList[idx]);
 			if (cin.get() == '\n')
@@ -167,33 +172,33 @@ void client::sendata()
 		}
 		if (addList.size() < 3)
 		{
-			printf("´´½¨ÈºÖÁÉÙÑ¡ÔñÈı¸ö³ÉÔ±!\n");
+			printf("åˆ›å»ºç¾¤è‡³å°‘é€‰æ‹©ä¸‰ä¸ªæˆå‘˜!\n");
 		}
 		if (m_login.createGroup(groupName, addList))
 			m_groupList.push_back(groupName);
 	}
-	else if (strcmp(sendbuf, "--delu") == 0) // É¾³ıºÃÓÑ
+	else if (strcmp(sendbuf, "--delu") == 0) // åˆ é™¤å¥½å‹
 	{
 		printFrinedList();
-		printf("ÇëÊäÈëÒªÉ¾³ıµÄºÃÓÑ±àºÅ£º");
+		printf("è¯·è¾“å…¥è¦åˆ é™¤çš„å¥½å‹ç¼–å·ï¼š");
 		int delNum;
 		scanf("%d", &delNum);
 		if (delNum<0 || delNum>m_friendList.size() - 1)
-			printf("ÊäÈë±àºÅÎŞĞ§£¡\n");
+			printf("è¾“å…¥ç¼–å·æ— æ•ˆï¼\n");
 		else
 		{
 			if(m_login.delFriend(m_user.m_userName, m_friendList[delNum].c_str()))
 				m_friendList.erase(m_friendList.begin() + delNum);
 		}
 	}
-	else if (strcmp(sendbuf, "--delg") == 0) // É¾³ıÈºÁÄ
+	else if (strcmp(sendbuf, "--delg") == 0) // åˆ é™¤ç¾¤èŠ
 	{
 		printGroupList();
-		printf("ÇëÊäÈëÒªÉ¾³ıµÄÈºÁÄ±àºÅ£º");
+		printf("è¯·è¾“å…¥è¦åˆ é™¤çš„ç¾¤èŠç¼–å·ï¼š");
 		int delNum;
 		scanf("%d", &delNum);
 		if (delNum<0 || delNum>m_groupList.size() - 1)
-			printf("ÊäÈë±àºÅÎŞĞ§£¡");
+			printf("è¾“å…¥ç¼–å·æ— æ•ˆï¼");
 		else
 		{
 			if(m_login.delGroup(m_groupList[delNum].c_str(), m_user.m_userName))
@@ -206,7 +211,7 @@ void client::sendata()
 	}
 	else
 	{	
-		if(messageIsVaild()) // ²é¿´ÊäÈëĞÅÏ¢µÄºÏ·¨ĞÔ
+		if(messageIsVaild()) // æŸ¥çœ‹è¾“å…¥ä¿¡æ¯çš„åˆæ³•æ€§
 			send(m_handle, sendbuf, sizeof(sendbuf) - 1, 0);
 	}
 	writing = 0;	
@@ -214,15 +219,15 @@ void client::sendata()
 
 void client::printHelp()
 {
-	printf("--h£º²é¿´°ïÖú\n");
-	printf("--ls£º²é¿´ºÃÓÑºÍÈºÁĞ±í\n");
-	printf("--addu£ºÌí¼ÓºÃÓÑ\n");
-	printf("--addg£ºÌí¼ÓÈºÁÄ\n");
-	printf("--createg£º´´½¨ÈºÁÄ\n");
-	printf("--delu£ºÉ¾³ıºÃÓÑ\n");
-	printf("--delg£ºÉ¾³ıÈºÁÄ\n");
-	//printf("ÊäÈëºÃÓÑ»òÕßÈºÁÄÃû×Ö½øĞĞÁÄÌì£¬ÊäÈëc¹Ø±ÕÁÄÌì´°¿Ú");
-	printf("--q£ºÍË³ö¿Í»§¶Ë\n\n");
+	printf("--hï¼šæŸ¥çœ‹å¸®åŠ©\n");
+	printf("--lsï¼šæŸ¥çœ‹å¥½å‹å’Œç¾¤åˆ—è¡¨\n");
+	printf("--adduï¼šæ·»åŠ å¥½å‹\n");
+	printf("--addgï¼šæ·»åŠ ç¾¤èŠ\n");
+	printf("--creategï¼šåˆ›å»ºç¾¤èŠ\n");
+	printf("--deluï¼šåˆ é™¤å¥½å‹\n");
+	printf("--delgï¼šåˆ é™¤ç¾¤èŠ\n");
+	//printf("è¾“å…¥å¥½å‹æˆ–è€…ç¾¤èŠåå­—è¿›è¡ŒèŠå¤©ï¼Œè¾“å…¥cå…³é—­èŠå¤©çª—å£");
+	printf("--qï¼šé€€å‡ºå®¢æˆ·ç«¯\n\n");
 }
 
 bool client::messageIsVaild()
@@ -232,20 +237,20 @@ bool client::messageIsVaild()
 
 void client::printFrinedList()
 {
-	printf("ºÃÓÑÁĞ±í£º");
+	printf("å¥½å‹åˆ—è¡¨ï¼š");
 	for (int i = 0; i < m_friendList.size();i++)
 	{
-		printf("\t%d£º%5s", i, m_friendList[i].c_str());
+		printf("\t%dï¼š%5s", i, m_friendList[i].c_str());
 	}
 	printf("\n");
 }
 
 void client::printGroupList()
 {
-	printf("ÈºÁÄÁĞ±í£º");
+	printf("ç¾¤èŠåˆ—è¡¨ï¼š");
 	for (int i = 0; i < m_groupList.size(); i++)
 	{
-		printf("\t%d£º%5s", i, m_groupList[i].c_str());
+		printf("\t%dï¼š%5s", i, m_groupList[i].c_str());
 	}
 	printf("\n");
 }

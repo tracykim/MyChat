@@ -1,28 +1,28 @@
-#define _CRT_SECURE_NO_WARNINGS
+ï»¿#define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "server.h"
 #include "user.h"
 
-//Ìî³ä·şÎñ¶ËĞÅÏ¢
+//å¡«å……æœåŠ¡ç«¯ä¿¡æ¯
 server::server()
 {
 	listener = 0;
 	serverAddr.sin_family = PF_INET;
 	serverAddr.sin_port = SERVER_PORT;
-	serverAddr.sin_addr.s_addr = inet_addr(SERVER_HOST);//½«×Ö·û´®ÀàĞÍ×ª»»uint32_t
+	serverAddr.sin_addr.s_addr = inet_addr(SERVER_HOST);//å°†å­—ç¬¦ä¸²ç±»å‹è½¬æ¢uint32_t
 
 	/*serverAddr.sin_family = AF_INET;
 	serverAddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
 	serverAddr.sin_port = SERVER_PORT;*/
 }
-//³õÊ¼»¯º¯Êı£¬´´½¨¼àÌıÌ×½Ó×Ö£¬°ó¶¨¶Ë¿Ú£¬²¢½øĞĞ¼àÌı
+//åˆå§‹åŒ–å‡½æ•°ï¼Œåˆ›å»ºç›‘å¬å¥—æ¥å­—ï¼Œç»‘å®šç«¯å£ï¼Œå¹¶è¿›è¡Œç›‘å¬
 void server::init()
 {
 	WSADATA wsaData;
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
 
-	// ´´½¨Ì×½Ó×Ö
-	listener = socket(AF_INET, SOCK_STREAM, 0);//²ÉÓÃipv4,TCP´«Êä
+	// åˆ›å»ºå¥—æ¥å­—
+	listener = socket(AF_INET, SOCK_STREAM, 0);//é‡‡ç”¨ipv4,TCPä¼ è¾“
 	if (listener == -1) { 
 		printf("Error at socket(): %ld\n", WSAGetLastError()); 
 		perror("listener failed"); 
@@ -35,34 +35,34 @@ void server::init()
 		perror("bind error");
 		exit(1);
 	}
-	listen(listener, 5);//listenerÕâ¸öÌ×½Ó×Ö¼àÌıÉêÇëµÄÁ´½Ó£¬×î´óµÈ´ıÁ¬½Ó¶ÓÁĞÎª5,µÈ´ıaccept()
-	//socksArr.push_back(listener);//½«¼àÌıÌ×½Ó×Ö¼ÓÈëÌ×½Ó×ÖÊı×é£¬Êı×éÄÚÊ×¸öÌ×½Ó×Ö¾ÍÊÇ·şÎñÆ÷µÄÌ×½Ó×Ö
-	//m_recvLogins.push_back(true); // ·şÎñÆ÷²»ĞèÒªµÇÂ½
+	listen(listener, 5);//listenerè¿™ä¸ªå¥—æ¥å­—ç›‘å¬ç”³è¯·çš„é“¾æ¥ï¼Œæœ€å¤§ç­‰å¾…è¿æ¥é˜Ÿåˆ—ä¸º5,ç­‰å¾…accept()
+	//socksArr.push_back(listener);//å°†ç›‘å¬å¥—æ¥å­—åŠ å…¥å¥—æ¥å­—æ•°ç»„ï¼Œæ•°ç»„å†…é¦–ä¸ªå¥—æ¥å­—å°±æ˜¯æœåŠ¡å™¨çš„å¥—æ¥å­—
+	//m_recvLogins.push_back(true); // æœåŠ¡å™¨ä¸éœ€è¦ç™»é™†
 	m_clientInfo.emplace_back(listener, "", true);
 }
 
 
-void server::processSingleChat()
+void server::process()
 {
 	int mount = 0;
 	fd_set fds, fds_copy;
-	FD_ZERO(&fds);//½«fdsÇåÁã
+	FD_ZERO(&fds);//å°†fdsæ¸…é›¶
 
 	init();
-	//²»¶ÏµÄ¼ì²éÉêÇëµÄÁ¬½Ó¶ÓÁĞ
+	//ä¸æ–­çš„æ£€æŸ¥ç”³è¯·çš„è¿æ¥é˜Ÿåˆ—
 	printf("Server is waiting......\n");
 	while (1)
 	{
 		//mount = socksArr.size();
 		mount = m_clientInfo.size();
-		//Ã¿´ÎÑ­»·¸üĞÂÒ»´ÎfdsÊı×é
+		//æ¯æ¬¡å¾ªç¯æ›´æ–°ä¸€æ¬¡fdsæ•°ç»„
 		for (int i = 0; i < mount; ++i)
 		{
 			//FD_SET(socksArr[i], &fds);
 			FD_SET(m_clientInfo[i].clientArr, &fds);
 		}
 
-		struct timeval timeout = { 1,0 };//Ã¿¸öSelectµÈ´ı1Ãë
+		struct timeval timeout = { 1,0 };//æ¯ä¸ªSelectç­‰å¾…1ç§’
 		switch (select(0, &fds, NULL, NULL, &timeout))
 		{
 		case -1:     //select error
@@ -73,23 +73,23 @@ void server::processSingleChat()
 			Sleep(1000);
 			break;
 		}
-		case 0:		//µÈ´ıÊ±¼äÄÚÎŞ¿Í»§¶ËÉêÇëÁ¬½Ó
+		case 0:		//ç­‰å¾…æ—¶é—´å†…æ— å®¢æˆ·ç«¯ç”³è¯·è¿æ¥
 		{
 			break;
 		}
 		default:
 		{
-			//½«Êı×éÖĞµÄÃ¿Ò»¸öÌ×½Ó×Ö¶¼ºÍÊ£ÓàµÄÌ×½Ó×Ö½øĞĞ±È½Ï£¬´Ó¶øµÃµ½µ±Ç°µÄÈÎÎñ
+			//å°†æ•°ç»„ä¸­çš„æ¯ä¸€ä¸ªå¥—æ¥å­—éƒ½å’Œå‰©ä½™çš„å¥—æ¥å­—è¿›è¡Œæ¯”è¾ƒï¼Œä»è€Œå¾—åˆ°å½“å‰çš„ä»»åŠ¡
 			for (int i = 0; i < mount; ++i)
 			{
-				//Ê×¸öÌ×½Ó×Ö¾ÍÊÇ·şÎñÆ÷µÄÌ×½Ó×Ö£¬µ±ÆÚ´æÔÚ²¢ÊÕµ½¿Í»§¶ËÁ¬½ÓÇëÇó£¬½øĞĞÁ¬½Ó²¢¸üĞÂÌ×½Ó×ÖÊı×é£¨½«Á¬½ÓµÄ¿Í»§¶ËÌ×½Ó×Ö¼Ó½øÊı×éÖĞ£©
+				//é¦–ä¸ªå¥—æ¥å­—å°±æ˜¯æœåŠ¡å™¨çš„å¥—æ¥å­—ï¼Œå½“æœŸå­˜åœ¨å¹¶æ”¶åˆ°å®¢æˆ·ç«¯è¿æ¥è¯·æ±‚ï¼Œè¿›è¡Œè¿æ¥å¹¶æ›´æ–°å¥—æ¥å­—æ•°ç»„ï¼ˆå°†è¿æ¥çš„å®¢æˆ·ç«¯å¥—æ¥å­—åŠ è¿›æ•°ç»„ä¸­ï¼‰
 				if (i==0 && FD_ISSET(m_clientInfo[i].clientArr, &fds)) //socksArr[i]
 				{
 					struct sockaddr_in client_addr;
 					int clntSz = sizeof(struct sockaddr_in);
-					//·µ»ØÒ»¸öÓÃ»§µÄÌ×½Ó×Ö
+					//è¿”å›ä¸€ä¸ªç”¨æˆ·çš„å¥—æ¥å­—
 					int clientfd = accept(listener, (struct sockaddr*)&client_addr, &clntSz);
-					//Ìí¼ÓÓÃ»§£¬·şÎñÆ÷ÉÏÏÔÊ¾ÏûÏ¢£¬²¢Í¨ÖªÓÃ»§Á¬½Ó³É¹¦
+					//æ·»åŠ ç”¨æˆ·ï¼ŒæœåŠ¡å™¨ä¸Šæ˜¾ç¤ºæ¶ˆæ¯ï¼Œå¹¶é€šçŸ¥ç”¨æˆ·è¿æ¥æˆåŠŸ
 					//socksArr.push_back(clientfd);
 					//m_recvLogins.push_back(false);
 					m_clientInfo.emplace_back(clientfd, "", false);
@@ -98,19 +98,17 @@ void server::processSingleChat()
 					sprintf(ID, "You ID is: %d and ", clientfd);
 					char buf[30] = "welcome joint the chatroom! \n";
 					strcat(ID, buf);
-					send(clientfd, ID, sizeof(ID) - 1, 0);//¼õÈ¥×îºóÒ»¸ö'/0'
+					send(clientfd, ID, sizeof(ID) - 1, 0);//å‡å»æœ€åä¸€ä¸ª'/0'
 				}
 				if (i != 0 && FD_ISSET(m_clientInfo[i].clientArr, &fds)) //socksArr[i]
 				{
 					char buf[1024];
 					memset(buf, '\0', sizeof(buf));
 
-					// ½ÓÊÕ¿Í»§¶ËµÄÏûÏ¢
+					// æ¥æ”¶å®¢æˆ·ç«¯çš„æ¶ˆæ¯
 					//int size = recv(socksArr[i], buf, sizeof(buf) - 1, 0);
 					int size = recv(m_clientInfo[i].clientArr, buf, sizeof(buf) - 1, 0);
-					if (buf[0] == '\0')
-						continue;
-					if (size > 0 && !m_clientInfo[i].recvLogin) //(!m_recvLogins[i]) // Î´ÊÕµ½µÚi¸ö¿Í»§¶ËµÇÂ¼ĞÅÏ¢
+					if (size > 0 && !m_clientInfo[i].recvLogin) // æœªæ”¶åˆ°ç¬¬iä¸ªå®¢æˆ·ç«¯ç™»å½•ä¿¡æ¯
 					{				
 						//m_name_arr.insert({ buf, socksArr[i] });
 						//m_recvLogins[i] = true;
@@ -121,47 +119,44 @@ void server::processSingleChat()
 						continue;
 					}					
 					
-					//¼ì²âÊÇ·ñ¶ÏÏß
+					//æ£€æµ‹æ˜¯å¦æ–­çº¿
 					if (size == 0 || size == -1)
 					{
 						printf("client %d leave\n", m_clientInfo[i].clientArr);
-
-						closesocket(m_clientInfo[i].clientArr);//¹Ø±ÕÕâ¸öÌ×½Ó×Ö
-						FD_CLR(m_clientInfo[i].clientArr, &fds);//ÔÚÁĞ±íÖĞÉ¾³ı
-						//socksArr.erase(socksArr.begin() + i);//ÔÚÌ×½Ó×ÖÊı×éÖĞÉ¾³ı
+						closesocket(m_clientInfo[i].clientArr);//å…³é—­è¿™ä¸ªå¥—æ¥å­—
+						FD_CLR(m_clientInfo[i].clientArr, &fds);//åœ¨åˆ—è¡¨ä¸­åˆ é™¤
+						//socksArr.erase(socksArr.begin() + i);//åœ¨å¥—æ¥å­—æ•°ç»„ä¸­åˆ é™¤
 						//m_recvLogins.erase(m_recvLogins.begin() + i);
 						m_clientInfo.erase(m_clientInfo.begin() + i);
 					}
-					//ÈôÊÇÃ»ÓĞµôÏß
+					//è‹¥æ˜¯æ²¡æœ‰æ‰çº¿
 					else
 					{
 						//printf("clint %d says: %s \n", m_clientInfo[i].clientArr, buf);
-						//char info[1024]; // Ëµ»°µÄ¿Í»§¶ËÃû×Ö
+						//char info[1024]; // è¯´è¯çš„å®¢æˆ·ç«¯åå­—
 						//sprintf(info, "client %d:", m_clientInfo[i].clientArr);
 						//strcat(info, buf);
 
-						//½«´Ë¿Í»§¶ËËµµÄ»°·¢ËÍ¸øÃ¿Ò»¸ö¿Í»§¶Ë
-						/*for (int j = 1; j < mount; j++)
-						{
-						send(socksArr[j], info, sizeof(info) - 1, 0);
-						}*/
+						//char toUserName[128], message[1024];
+						//memset(toUserName, '\0', sizeof(toUserName));
+						//memset(message, '\0', sizeof(message));
+						//getUserAndMessage(buf, toUserName, message);					
 
-						char toUserName[128], message[1024];
-						memset(toUserName, '\0', sizeof(toUserName));
-						memset(message, '\0', sizeof(message));
-						getUserAndMessage(buf, toUserName, message);					
+						//if (m_name_arr.find(toUserName) != m_name_arr.end())
+						//{
+						//	char sendInfo[1024];
+						//	memset(sendInfo, '\0', sizeof(sendInfo));
+						//	// æ‰¾åˆ°å‘é€è€…çš„åå­—
+						//	std::string fromUserName = m_clientInfo[i].clientName;
+						//	sprintf(sendInfo, "From %sï¼š", fromUserName.c_str());
+						//	strcat(sendInfo, message);						
+						//	send(m_name_arr[toUserName], sendInfo, sizeof(sendInfo) - 1, 0);
+						//}
 
-						if (m_name_arr.find(toUserName) != m_name_arr.end())
-						{
-							char sendInfo[1024];
-							memset(sendInfo, '\0', sizeof(sendInfo));
-							// ÕÒµ½·¢ËÍÕßµÄÃû×Ö
-							std::string fromUserName = m_clientInfo[i].clientName;
-							sprintf(sendInfo, "From %s£º", fromUserName.c_str());
-							strcat(sendInfo, message);						
-							send(m_name_arr[toUserName], sendInfo, sizeof(sendInfo) - 1, 0);
-						}
-												
+						if (buf[0] == '\0')
+							continue;
+						///å‡½æ•°åŒ–
+						processMessage(buf, i);
 					}
 				}
 			}
@@ -171,18 +166,74 @@ void server::processSingleChat()
 	}
 }
 
-// ¸ù¾İ¿Õ¸ñ·Ö¸ô×Ö·û´®
+// å¤„ç†å®¢æˆ·ç«¯å‘è¿‡æ¥çš„æ¶ˆæ¯
+void server::processMessage(const char* buf, int clinetIdx)
+{
+	char name[128], message[1024];
+	memset(name, '\0', sizeof(name));
+	memset(message, '\0', sizeof(message));
+	getUserAndMessage(buf, name, message);
+
+	// ä¸æ˜¯ç”¨æˆ·åæˆ–å½“å‰ç”¨æˆ·ä¸åœ¨çº¿
+	if (!sendMessage(message, m_clientInfo[clinetIdx].clientName, name))
+	{
+		if (m_db.hasGroup(name)) // å¦‚æœå‘é€çš„æ˜¯ç¾¤èŠåï¼Œè¿›è¡Œç¾¤èŠ
+		{
+			// æŸ¥è¯¢ç¾¤èŠç”¨æˆ·
+			std::vector<string> groupList;
+			m_db.QueryUserListInGroup(name, groupList);
+			for (int i = 0; i < groupList.size(); i++)
+			{
+				if(groupList[i]!=m_clientInfo[clinetIdx].clientName)
+					sendMessageFromGroup(message, name, m_clientInfo[clinetIdx].clientName, groupList[i]);
+			}
+		}
+	}
+}
+
+// ä¸€ä¸ªå®¢æˆ·ç«¯ç»™å¦ä¸€ä¸ªå®¢æˆ·ç«¯å‘é€æ¶ˆæ¯
+bool server::sendMessage(const char * message, std::string fromClinetName, std::string toClinetName)
+{
+	// å½“å‰å®¢æˆ·ç«¯æ˜¯å¦åœ¨çº¿åœ¨çº¿
+	if (m_name_arr.find(toClinetName) != m_name_arr.end())
+	{
+		char sendInfo[1024];
+		//memset(sendInfo, '\0', sizeof(sendInfo));
+		sprintf(sendInfo, "[%s]ï¼š", fromClinetName.c_str());
+		strcat(sendInfo, message);
+		send(m_name_arr[toClinetName], sendInfo, sizeof(sendInfo) - 1, 0);
+		return true;
+	}
+	return false;
+}
+
+bool server::sendMessageFromGroup(const char* message, const char* groupName, std::string fromClinetName, std::string toClinetName)
+{
+	// å½“å‰å®¢æˆ·ç«¯æ˜¯å¦åœ¨çº¿åœ¨çº¿
+	if (m_name_arr.find(toClinetName) != m_name_arr.end())
+	{
+		char sendInfo[1024];
+		//memset(sendInfo, '\0', sizeof(sendInfo));
+		sprintf(sendInfo, "[%s]-[%s]ï¼š", groupName, fromClinetName.c_str());
+		strcat(sendInfo, message);
+		send(m_name_arr[toClinetName], sendInfo, sizeof(sendInfo) - 1, 0);
+		return true;
+	}
+	return false;
+}
+
+// æ ¹æ®ç©ºæ ¼åˆ†éš”å­—ç¬¦ä¸²
 void getUserAndMessage(const char buf[1024], char userName[128], char message[128])
 {
 	int i = 0, p = 0, q=0;
-	// Ìî³äÓÃ»§Ãû
+	// å¡«å……ç”¨æˆ·å
 	while(buf[i]!='\0' && buf[i] != ' ')
 	{
 		userName[p++] = buf[i++];
 	}
 	userName[i] = '\0';
 	i++;
-	// Ìî³äĞÅÏ¢
+	// å¡«å……ä¿¡æ¯
 	while (buf[i] != '\0')
 	{
 		message[q++] = buf[i++];

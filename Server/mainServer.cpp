@@ -1,33 +1,16 @@
-//server
+ï»¿//server
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #include "server.h"
-#include "MySQLManager.h"
-#pragma comment(lib,"ws2_32.lib")// Á´½Óµ½WS2_32.lib
+//#include "MySQLManager.h"
+#pragma comment(lib,"ws2_32.lib")// é“¾æ¥åˆ°WS2_32.lib
 #pragma comment(lib, "libmysql.lib")
 
 using namespace std;
 int main()
 {
-	//MySQLManager mysql;
-	//ConnectionInfo info;
-	//// Ìî³äConnectionInfoÕâ¸ö½á¹¹Ìå£¬ÏîÄ¿ÖĞÒ»°ã´ÓÅäÖÃÎÄ¼şÕâ¶ÁÈ¡
-	//info.user = "root";
-	//info.password = "123";
-	//info.host = "localhost";
-	//info.port = 3306;
-	//info.database = "mychat";
-	//info.unix_socket = NULL;
-	//info.clientflag = 0;
-
-	//const char* sql4 = "select * from user";
-	//MYSQL_RES* res = mysql.QueryData(sql4);
-	//mysql.PrintQueryRes();
 	server ser;
-	ser.processSingleChat();
-	/*char info[] =  "Wade hello";
-	char userName[128], message[128];
-	getUserAndMessage(info, userName, message);*/
+	ser.process();
 	return 0;
 }
 

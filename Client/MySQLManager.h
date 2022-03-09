@@ -1,28 +1,28 @@
-#pragma once
-// ÍøÂçÍ¨ĞÅÍ·ÎÄ¼ş
-#include <WinSock.h>
-// ÒıÈëmysqlÍ·ÎÄ¼ş(±È½ÏºÃµÄ×ö·¨ÊÇ°ÑÎÄ¼ş¼Ğ¿½µ½¹¤³ÌÄ¿Â¼£¬Ò²¿ÉÒÔÔÚvcÄ¿Â¼ÀïÃæÉèÖÃ)
+ï»¿#pragma once
+// ç½‘ç»œé€šä¿¡å¤´æ–‡ä»¶
+#include <WinSock2.h>
+// å¼•å…¥mysqlå¤´æ–‡ä»¶(æ¯”è¾ƒå¥½çš„åšæ³•æ˜¯æŠŠæ–‡ä»¶å¤¹æ‹·åˆ°å·¥ç¨‹ç›®å½•ï¼Œä¹Ÿå¯ä»¥åœ¨vcç›®å½•é‡Œé¢è®¾ç½®)
 #include "mysql.h"
 #include <Windows.h>
 #include "mysql_config.h"
 #include <vector>
 #include <string>
-// °üº¬¸½¼ÓÒÀÀµÏî£¬Ò²¿ÉÒÔÔÚ¹¤³Ì--ÊôĞÔÀïÃæÉèÖÃ
+// åŒ…å«é™„åŠ ä¾èµ–é¡¹ï¼Œä¹Ÿå¯ä»¥åœ¨å·¥ç¨‹--å±æ€§é‡Œé¢è®¾ç½®
 #pragma comment(lib, "wsock32.lib")
 #pragma comment(lib, "libmysql.lib")
 
-// Á¬½ÓÊı¾İ¿âµÄÒ»Ğ©±ØÒªĞÅÏ¢
+// è¿æ¥æ•°æ®åº“çš„ä¸€äº›å¿…è¦ä¿¡æ¯
 struct ConnectionInfo
 {
-	const char* host;            // Ö÷»úµØÖ·
-	const char* user;            // ÓÃ»§Ãû
-	const char* password;        // ÃÜÂë
-	const char*    database;        // Êı¾İ¿âÃû
-	unsigned int port;            // ¶Ë¿ÚºÅ
-	const char*    unix_socket;    // unixÁ¬½Ó±êÊ¶
-	unsigned long clientflag;    // ¿Í»§¶ËÁ¬½Ó±êÖ¾
+	const char* host;            // ä¸»æœºåœ°å€
+	const char* user;            // ç”¨æˆ·å
+	const char* password;        // å¯†ç 
+	const char*    database;        // æ•°æ®åº“å
+	unsigned int port;            // ç«¯å£å·
+	const char*    unix_socket;    // unixè¿æ¥æ ‡è¯†
+	unsigned long clientflag;    // å®¢æˆ·ç«¯è¿æ¥æ ‡å¿—
 
-								 // ¹¹Ôìº¯Êı£¬ÉèÖÃÒ»Ğ©Ä¬ÈÏÖµ
+								 // æ„é€ å‡½æ•°ï¼Œè®¾ç½®ä¸€äº›é»˜è®¤å€¼
 	ConnectionInfo() :
 		host(HOST),
 		port(PORT),
@@ -37,34 +37,34 @@ class MySQLManager
 {
 public:
 
-	// Á¬½ÓÊı¾İ¿â
+	// è¿æ¥æ•°æ®åº“
 	bool Init(ConnectionInfo& info);
 
-	// ÊÍ·ÅÁ¬½Ó
+	// é‡Šæ”¾è¿æ¥
 	bool FreeConnect();
 
-	// Ôö¼ÓÊı¾İ
+	// å¢åŠ æ•°æ®
 	//bool InsertData(const char* sql);
 
-	// É¾³ıÊı¾İ
+	// åˆ é™¤æ•°æ®
 	//bool DeleteData(const char* sql);
 
-	// ¸üĞÂÊı¾İ
+	// æ›´æ–°æ•°æ®
 	//bool UpdateData(const char* sql);
 
-	// Ö´ĞĞsqlÓï¾ä, °üÀ¨Ôö¼Ó¡¢É¾³ı¡¢¸üĞÂÊı¾İ
+	// æ‰§è¡Œsqlè¯­å¥, åŒ…æ‹¬å¢åŠ ã€åˆ é™¤ã€æ›´æ–°æ•°æ®
 	bool ExecuteSql(const char* sql);
 
-	// ²éÑ¯Êı¾İ
+	// æŸ¥è¯¢æ•°æ®
 	MYSQL_RES* QueryData(const char* sql);
 	bool hasData(const char* sql);
 
 	// 
-	// ´òÓ¡½á¹û¼¯
+	// æ‰“å°ç»“æœé›†
 	void PrintQueryRes();
 	void SaveQueryRes(std::vector<std::string>& resList);
 
 private:
-	MYSQL m_mysql;                // mysqlÁ¬½Ó
-	MYSQL_RES* m_res;            // ²éÑ¯½á¹û¼¯
+	MYSQL m_mysql;                // mysqlè¿æ¥
+	MYSQL_RES* m_res;            // æŸ¥è¯¢ç»“æœé›†
 };

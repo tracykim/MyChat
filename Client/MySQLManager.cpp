@@ -1,15 +1,15 @@
-#include "MySQLManager.h"
+ï»¿#include "MySQLManager.h"
 #include <iostream>
 #include <stdio.h>
 using namespace std;
 
-// Á¬½ÓÊı¾İ¿â
+// è¿æ¥æ•°æ®åº“
 bool MySQLManager::Init(ConnectionInfo& info)
 {
-	// ³õÊ¼»¯mysql,Á¬½Ómysql£¬Êı¾İ¿â
+	// åˆå§‹åŒ–mysql,è¿æ¥mysqlï¼Œæ•°æ®åº“
 	mysql_init(&m_mysql);
 
-	// Á¬½ÓÊ§°Ü
+	// è¿æ¥å¤±è´¥
 	if (!(mysql_real_connect(&m_mysql, info.host, info.user, info.password, info.database, info.port, info.unix_socket, info.clientflag)))
 	{
 		return false;
@@ -18,63 +18,63 @@ bool MySQLManager::Init(ConnectionInfo& info)
 	return true;
 }
 
-// ÊÍ·ÅÁ¬½Ó
+// é‡Šæ”¾è¿æ¥
 bool MySQLManager::FreeConnect()
 {
-	//ÊÍ·Å×ÊÔ´
+	//é‡Šæ”¾èµ„æº
 	mysql_free_result(m_res);
 	mysql_close(&m_mysql);
 
 	return false;
 }
 
-// Ö´ĞĞsqlÓï¾ä, °üÀ¨Ôö¼Ó¡¢É¾³ı¡¢¸üĞÂÊı¾İ
+// æ‰§è¡Œsqlè¯­å¥, åŒ…æ‹¬å¢åŠ ã€åˆ é™¤ã€æ›´æ–°æ•°æ®
 bool MySQLManager::ExecuteSql(const char * sql)
 {
 	if (mysql_query(&m_mysql, sql))
 	{
-		// ´ò´íÎólog£¬ÕâÀïÖ±½ÓÏÔÊ¾µ½¿ØÖÆÌ¨
-		//cerr << "Ö´ĞĞsqlÓï¾äÊ§°Ü£¬´íÎóĞÅÏ¢Îª£º " << mysql_error(&m_mysql) << endl;
+		// æ‰“é”™è¯¯logï¼Œè¿™é‡Œç›´æ¥æ˜¾ç¤ºåˆ°æ§åˆ¶å°
+		//cerr << "æ‰§è¡Œsqlè¯­å¥å¤±è´¥ï¼Œé”™è¯¯ä¿¡æ¯ä¸ºï¼š " << mysql_error(&m_mysql) << endl;
 		return false;
 	}
 	else
 	{
-		//cout << "Ö´ĞĞsqlÓï¾ä³É¹¦£¡" << endl;
+		//cout << "æ‰§è¡Œsqlè¯­å¥æˆåŠŸï¼" << endl;
 	}
 
 	return true;
 }
 
-// ²éÑ¯Êı¾İ
+// æŸ¥è¯¢æ•°æ®
 MYSQL_RES* MySQLManager::QueryData(const char* sql)
 {
 	if (mysql_query(&m_mysql, sql))
 	{
-		// ´ò´íÎólog£¬ÕâÀïÖ±½ÓÏÔÊ¾µ½¿ØÖÆÌ¨
-		cerr << "²éÑ¯Óï¾äÖ´ĞĞÊ§°Ü£¬´íÎóĞÅÏ¢Îª£º " << mysql_error(&m_mysql) << endl;
+		// æ‰“é”™è¯¯logï¼Œè¿™é‡Œç›´æ¥æ˜¾ç¤ºåˆ°æ§åˆ¶å°
+		cerr << "æŸ¥è¯¢è¯­å¥æ‰§è¡Œå¤±è´¥ï¼Œé”™è¯¯ä¿¡æ¯ä¸ºï¼š " << mysql_error(&m_mysql) << endl;
 		return nullptr;
 	}
 	//else
 	//{
-	//	cout << "²éÑ¯Óï¾äÖ´ĞĞ³É¹¦£¡" << endl;
+	//	cout << "æŸ¥è¯¢è¯­å¥æ‰§è¡ŒæˆåŠŸï¼" << endl;
 	//}
 
-	// ´æ´¢²éÑ¯½á¹û
+	// å­˜å‚¨æŸ¥è¯¢ç»“æœ
 	m_res = mysql_store_result(&m_mysql);
 
 	return m_res;
 }
 
-// ²éÑ¯ÊÇ·ñÓĞ¸ÃÌõÊı¾İ
+// æŸ¥è¯¢æ˜¯å¦æœ‰è¯¥æ¡æ•°æ®
 bool MySQLManager::hasData(const char* sql)
 {
 	MYSQL_RES* res = QueryData(sql);
-	//int res_num0 = mysql_affected_rows(&m_mysql); // ¶ÔINSERT,UPDATE,DELETEÒ²ÓĞĞ§ 
-	int res_num = mysql_num_rows(m_res); // ½ö¶ÔSELECTÓĞĞ§
+	//int res_num0 = mysql_affected_rows(&m_mysql); // å¯¹INSERT,UPDATE,DELETEä¹Ÿæœ‰æ•ˆ 
+	int res_num = mysql_num_rows(m_res); // ä»…å¯¹SELECTæœ‰æ•ˆ
 	return res_num;
 }
 
-// ±éÀú½á¹û¼¯
+// éå†ç»“æœé›†
 void MySQLManager::PrintQueryRes()
 {
 	if (nullptr == m_res || NULL == m_res)
@@ -82,25 +82,25 @@ void MySQLManager::PrintQueryRes()
 		return;
 	}
 
-	// »ñÈ¡ĞĞÊı
+	// è·å–è¡Œæ•°
 	// unsigned int rows = mysql_affected_rows(m_mysql);
 
-	/// jinye ²»Êä³ö±í¸ñĞÅÏ¢
-	// ×Ö¶ÎÁĞÊı×é
+	/// jinye ä¸è¾“å‡ºè¡¨æ ¼ä¿¡æ¯
+	// å­—æ®µåˆ—æ•°ç»„
 	//MYSQL_FIELD* field = nullptr;
-	////´æ×Ö¶ÎÃû¶şÎ¬Êı×é
+	////å­˜å­—æ®µåäºŒç»´æ•°ç»„
 	//char fieldName[64][32];
-	//// »ñÈ¡×Ö¶ÎÃû
+	//// è·å–å­—æ®µå
 	//for (int i = 0; field = mysql_fetch_field(m_res); ++i)
 	//{
 	//	strcpy_s(fieldName[i], field->name);
 	//}
 
-	//// »ñÈ¡ÁĞÊı
+	//// è·å–åˆ—æ•°
 	//int columns = mysql_num_fields(m_res);
 	//for (int i = 0; i < columns; ++i)
 	//{
-	//	// Ê¹ÓÃCÓïÑÔµÄprintf¸ñÊ½»¯¸ü·½±ãÒ»µã
+	//	// ä½¿ç”¨Cè¯­è¨€çš„printfæ ¼å¼åŒ–æ›´æ–¹ä¾¿ä¸€ç‚¹
 	//	printf("%10s\t", fieldName[i]);
 	//}
 	//cout << endl;

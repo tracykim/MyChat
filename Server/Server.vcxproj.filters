@@ -21,9 +21,24 @@
     <ClCompile Include="mainServer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\Client\login.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Client\MySQLManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="server.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Client\server_config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Client\mysql_config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Client\login.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

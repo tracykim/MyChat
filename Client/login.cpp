@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+ï»¿#define _CRT_SECURE_NO_WARNINGS
 #include "login.h"
 Login::Login()
 {
@@ -16,13 +16,13 @@ Login::~Login()
 {
 	m_sqlManager.FreeConnect();
 }
-// ÔÚÊı¾İ¿âÖĞ²éÕÒÊÇ·ñÓĞ¸ÃÓÃ»§
+// åœ¨æ•°æ®åº“ä¸­æŸ¥æ‰¾æ˜¯å¦æœ‰è¯¥ç”¨æˆ·
 bool Login::loginSuccess(char* userName, char* userPwd)
 {
 	//char* query = "select * from user where";
 	//memset(query, 0, sizeof(query));
 	sprintf(m_query, "SELECT 1 FROM %s WHERE user_name='%s' and user_pwd='%s' limit 1", TABLE_USER, userName, userPwd);
-	if (m_sqlManager.hasData(m_query)) // ÓÃ»§Ãû¡¢ÃÜÂëÕıÈ·£ºµÇÂ½³É¹¦
+	if (m_sqlManager.hasData(m_query)) // ç”¨æˆ·åã€å¯†ç æ­£ç¡®ï¼šç™»é™†æˆåŠŸ
 	{
 		return true;
 	}
@@ -30,10 +30,10 @@ bool Login::loginSuccess(char* userName, char* userPwd)
 	{
 		sprintf(m_query, "select * from %s where user_name='%s'", TABLE_USER, userName);
 		if(m_sqlManager.hasData(m_query)){
-			printf("ÓÃ»§Ãû»òÕßÃÜÂë²»ÕıÈ·\n");
+			printf("ç”¨æˆ·åæˆ–è€…å¯†ç ä¸æ­£ç¡®\n");
 			return false;
 		}
-		else {// ×¢²áĞÂÓÃ»§
+		else {// æ³¨å†Œæ–°ç”¨æˆ·
 			sprintf(m_query, "INSERT INTO %s VALUES (NULL, '%s', '%s')", TABLE_USER, userName, userPwd);
 			m_sqlManager.ExecuteSql(m_query);
 			return true;
@@ -42,7 +42,7 @@ bool Login::loginSuccess(char* userName, char* userPwd)
 	
 }
 
-// ²éÑ¯ºÃÓÑÁĞ±í
+// æŸ¥è¯¢å¥½å‹åˆ—è¡¨
 void Login::QueryFriendList(char* userName)
 {
 	sprintf(m_query, "SELECT user_name2 FROM %s WHERE user_name1='%s' UNION ALL SELECT user_name1 FROM %s WHERE user_name2 ='%s'", TABLE_FRIEND, userName, TABLE_FRIEND, userName);
@@ -50,7 +50,7 @@ void Login::QueryFriendList(char* userName)
 	m_sqlManager.PrintQueryRes();
 }
 
-// ²éÑ¯ºÃÓÑÁĞ±í²¢´æ´¢
+// æŸ¥è¯¢å¥½å‹åˆ—è¡¨å¹¶å­˜å‚¨
 void Login::QueryFriendList(char* userName, std::vector<string>& friendList)
 {
 	sprintf(m_query, "SELECT user_name2 FROM %s WHERE user_name1='%s' UNION ALL SELECT user_name1 FROM %s WHERE user_name2 ='%s'", TABLE_FRIEND, userName, TABLE_FRIEND, userName);
@@ -58,7 +58,7 @@ void Login::QueryFriendList(char* userName, std::vector<string>& friendList)
 	m_sqlManager.SaveQueryRes(friendList);
 }
 
-// ²éÑ¯ÈºÁÄÁĞ±í
+// æŸ¥è¯¢ç¾¤èŠåˆ—è¡¨
 void Login::QueryGroupList(char* userName)
 {
 	sprintf(m_query, "SELECT group_name FROM %s WHERE user_name='%s'", TABLE_GROUP, userName);
@@ -66,81 +66,92 @@ void Login::QueryGroupList(char* userName)
 	m_sqlManager.PrintQueryRes();
 }
 
-// ²éÑ¯ÈºÁÄÁĞ±í²¢´æ´¢
+// æŸ¥è¯¢ç¾¤èŠåˆ—è¡¨å¹¶å­˜å‚¨
 void Login::QueryGroupList(char* userName, std::vector<string>& groupList)
 {
 	sprintf(m_query, "SELECT group_name FROM %s WHERE user_name='%s'", TABLE_GROUP, userName);
 	m_sqlManager.QueryData(m_query);
 	m_sqlManager.SaveQueryRes(groupList);
 }
+
+// æŸ¥è¯¢ç¾¤èŠä¸­çš„æ‰€æœ‰ç”¨æˆ·å¹¶å­˜å‚¨
+void Login::QueryUserListInGroup(char * group_name, std::vector<string>& userList)
+{
+	sprintf(m_query, "SELECT user_name FROM %s WHERE group_name='%s'", TABLE_GROUP, group_name);
+	m_sqlManager.QueryData(m_query);
+	m_sqlManager.SaveQueryRes(userList);
+}
 void Login::QueryChatList(char* userName)
 {
-	printf("ºÃÓÑÁĞ±í£º");
+	printf("å¥½å‹åˆ—è¡¨ï¼š");
 	QueryFriendList(userName);
-	printf("ÈºÁÄÁĞ±í£º");
+	printf("ç¾¤èŠåˆ—è¡¨ï¼š");
 	QueryGroupList(userName);
 }
 
-// Ìí¼ÓºÃÓÑ
+// æ·»åŠ å¥½å‹
 bool Login::addFriend(char * fromUserName, char * toUserName)
 {
-	// ²éÑ¯¸ÃºÃÓÑÊÇ·ñ´æÔÚ
+	// æŸ¥è¯¢è¯¥å¥½å‹æ˜¯å¦å­˜åœ¨
 	if (!hasUser(toUserName))
 		return false;
 
 	sprintf(m_query, "SELECT 1 FROM %s WHERE (user_name1='%s' AND user_name2='%s') OR (user_name2='%s' AND user_name1='%s')", TABLE_FRIEND, fromUserName, toUserName, fromUserName, toUserName);
 	if (m_sqlManager.hasData(m_query)) 
 	{
-		printf("ÄãÒÑ¾­Ìí¼ÓºÃÓÑ[%s]£¬ÇëÎğÖØ¸´Ìí¼Ó\n", toUserName);
+		printf("ä½ å·²ç»æ·»åŠ å¥½å‹[%s]ï¼Œè¯·å‹¿é‡å¤æ·»åŠ \n", toUserName);
 		return false;
 	}
 	sprintf(m_query, "INSERT INTO %s VALUES('%s', '%s')", TABLE_FRIEND, fromUserName, toUserName);
 	if (m_sqlManager.ExecuteSql(m_query))
 	{
-		printf("Ìí¼ÓºÃÓÑ[%s]³É¹¦\n", toUserName);
+		printf("æ·»åŠ å¥½å‹[%s]æˆåŠŸ\n", toUserName);
 		return true;
 	}
 	else
 	{
-		printf("Ìí¼ÓºÃÓÑ[%s]Ê§°Ü\n", toUserName);
+		printf("æ·»åŠ å¥½å‹[%s]å¤±è´¥\n", toUserName);
 		return false;
 	}
 }
 
-// Ìí¼ÓÈºÁÄ
+// æ·»åŠ ç¾¤èŠ
 bool Login::addGroup(char* groupName, char* userName)
 {
-	// ²éÑ¯¸ÃÈºÁÄÊÇ·ñ´æÔÚ
+	// æŸ¥è¯¢è¯¥ç¾¤èŠæ˜¯å¦å­˜åœ¨
 	if (!hasGroup(groupName))
+	{
+		printf("è¯¥ç¾¤èŠä¸å­˜åœ¨ï¼\n");
 		return false;
+	}
 
 	sprintf(m_query, "SELECT 1 FROM %s WHERE group_name='%s' AND user_name='%s'", TABLE_GROUP, groupName, userName);
 	if (m_sqlManager.hasData(m_query))
 	{
-		printf("ÄãÒÑ¾­¼ÓÈëÈºÁÄ[%s]£¬ÇëÎğÖØ¸´¼ÓÈë\n", groupName);
+		printf("ä½ å·²ç»åŠ å…¥ç¾¤èŠ[%s]ï¼Œè¯·å‹¿é‡å¤åŠ å…¥\n", groupName);
 		return false;
 	}
 
 	sprintf(m_query, "INSERT INTO %s VALUES('%s', '%s')", TABLE_GROUP, groupName, userName);
 	if (m_sqlManager.ExecuteSql(m_query))
 	{
-		printf("Ìí¼ÓÈº[%s]³É¹¦\n", groupName);
+		printf("æ·»åŠ ç¾¤[%s]æˆåŠŸ\n", groupName);
 		return true;
 	}
 	else
 	{
-		printf("Ìí¼ÓÈº[%s]Ê§°Ü\n", groupName);
+		printf("æ·»åŠ ç¾¤[%s]å¤±è´¥\n", groupName);
 		return false;
 	}
 }
 
-// ´´½¨ÈºÁÄ
+// åˆ›å»ºç¾¤èŠ
 bool Login::createGroup(char * groupName, std::vector<string> userNameList)
 {
 	//sprintf(m_query, "SELECT group_name FROM %s WHERE user_name='%s'", TABLE_GROUP, groupName);
 	if (hasGroup(groupName))
 	{
-		printf("µ±Ç°ÈºÃû[%s]ÒÑ¾­´æÔÚ£¬´´½¨Ê§°Ü£¡\n", groupName);
+		printf("å½“å‰ç¾¤å[%s]å·²ç»å­˜åœ¨ï¼Œåˆ›å»ºå¤±è´¥ï¼\n", groupName);
 		return false;
 	}
 
@@ -149,63 +160,64 @@ bool Login::createGroup(char * groupName, std::vector<string> userNameList)
 		sprintf(m_query, "INSERT INTO %s VALUES('%s', '%s')", TABLE_GROUP, groupName, userNameList[i]);
 		if (!m_sqlManager.ExecuteSql(m_query))
 		{
-			printf("Ìí¼ÓÈº³ÉÔ±[%s]Ê§°Ü£¡\n", userNameList[i]);
+			printf("æ·»åŠ ç¾¤æˆå‘˜[%s]å¤±è´¥ï¼\n", userNameList[i]);
 		}
 	}
+
+	printf("åˆ›å»ºç¾¤èŠæˆåŠŸï¼\n");
 	return true;
 }
 
-// É¾³ıºÃÓÑ
+// åˆ é™¤å¥½å‹
 bool Login::delFriend(char * fromUserName, const char * toUserName)
 {
 	sprintf(m_query, "DELETE FROM %s WHERE (user_name1='%s' AND user_name2='%s') OR (user_name2 ='%s' AND user_name1='%s')", TABLE_FRIEND, fromUserName, toUserName, fromUserName, toUserName);
 	if (m_sqlManager.ExecuteSql(m_query))
 	{
-		printf("É¾³ıºÃÓÑ[%s]³É¹¦\n", toUserName);
+		printf("åˆ é™¤å¥½å‹[%s]æˆåŠŸ\n", toUserName);
 		return true;
 	}
 	else
 	{
-		printf("É¾³ıºÃÓÑ[%s]Ê§°Ü\n", toUserName);
+		printf("åˆ é™¤å¥½å‹[%s]å¤±è´¥\n", toUserName);
 		return false;
 	}
 }
 
-// É¾³ıÈºÁÄ
+// åˆ é™¤ç¾¤èŠ
 bool Login::delGroup(const char* groupName, char* userName)
 {
 	sprintf(m_query, "DELETE FROM %s WHERE group_name='%s' AND user_name='%s'", TABLE_GROUP, groupName, userName);
 	if (m_sqlManager.ExecuteSql(m_query))
 	{
-		printf("É¾³ıÈºÁÄ[%s]³É¹¦\n", groupName);
+		printf("åˆ é™¤ç¾¤èŠ[%s]æˆåŠŸ\n", groupName);
 		return true;
 	}
 	else
 	{
-		printf("É¾³ıÈºÁÄ[%s]Ê§°Ü\n", groupName);
+		printf("åˆ é™¤ç¾¤èŠ[%s]å¤±è´¥\n", groupName);
 		return false;
 	}
 }
 
-// ²éÑ¯ÊÇ·ñÓĞ¸ÃÓÃ»§
+// æŸ¥è¯¢æ˜¯å¦æœ‰è¯¥ç”¨æˆ·
 bool Login::hasUser(const char* userName)
 {
 	sprintf(m_query, "SELECT 1 FROM  %s WHERE user_name='%s' limit 1", TABLE_USER, userName);
 	if (!m_sqlManager.hasData(m_query))
 	{
-		printf("¸ÃÓÃ»§²»´æÔÚ£¡\n");
+		printf("è¯¥ç”¨æˆ·ä¸å­˜åœ¨ï¼\n");
 		return false;
 	}
 	return true;
 }
 
-// ²éÑ¯ÊÇ·ñÓĞ¸ÃÈºÁÄ
+// æŸ¥è¯¢æ˜¯å¦æœ‰è¯¥ç¾¤èŠ
 bool Login::hasGroup(const char* groupName)
 {
 	sprintf(m_query, "SELECT 1 FROM  %s WHERE group_name='%s' limit 1", TABLE_GROUP, groupName);
 	if (!m_sqlManager.hasData(m_query))
 	{
-		printf("¸ÃÈºÁÄ²»´æÔÚ£¡\n");
 		return false;
 	}
 	return true;
