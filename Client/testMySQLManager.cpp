@@ -1,15 +1,15 @@
-ï»¿#include "client.h"
+#include "client.h"
 #include "MySQLManager.h"
 #include "login.h"
-#pragma comment(lib, "ws2_32.lib")  // é“¾æ¥åˆ°WS2_32.lib
+#pragma comment(lib, "ws2_32.lib")  // Á´½Óµ½WS2_32.lib
 
 using namespace std;
 /*
 int main() {
-	/// 1ã€æµ‹è¯•mysqlè¿æ¥ å¢åˆ æ”¹æŸ¥	
+	/// 1¡¢²âÊÔmysqlÁ¬½Ó ÔöÉ¾¸Ä²é	
 	//MySQLManager mysql;
 	//ConnectionInfo info;
-	//// å¡«å……ConnectionInfoè¿™ä¸ªç»“æ„ä½“ï¼Œé¡¹ç›®ä¸­ä¸€èˆ¬ä»é…ç½®æ–‡ä»¶è¿™è¯»å–
+	//// Ìî³äConnectionInfoÕâ¸ö½á¹¹Ìå£¬ÏîÄ¿ÖĞÒ»°ã´ÓÅäÖÃÎÄ¼şÕâ¶ÁÈ¡
 	//info.user = "root";
 	//info.password = "123";
 	//info.host = "localhost";
@@ -18,33 +18,33 @@ int main() {
 	//info.unix_socket = NULL;
 	//info.clientflag = 0;
 
-	//// mysqlè¿æ¥
+	//// mysqlÁ¬½Ó
 	//if (!mysql.Init(info))
 	//{
 	//	return -1;
 	//}
 
-	//// å¢åŠ æ•°æ®æµ‹è¯•
+	//// Ôö¼ÓÊı¾İ²âÊÔ
 	//const char* sql1 = "insert into user values (NULL, 'Kim', 'qwe')";
 	//mysql.ExecuteSql(sql1);
 
-	//// åˆ é™¤æ•°æ®æµ‹è¯•
+	//// É¾³ıÊı¾İ²âÊÔ
 	////const char* sql2 = "delete from user where name = 'AceTan'";
 	////mysql.ExecuteSql(sql2);
 
-	//// ä¿®æ”¹æ•°æ®æµ‹è¯•
+	//// ĞŞ¸ÄÊı¾İ²âÊÔ
 	////const char* sql3 = "update user set password='update_password' where name = 'Ada'";
 	////mysql.ExecuteSql(sql3);
 
-	//// æŸ¥è¯¢æ•°æ®æµ‹è¯•
+	//// ²éÑ¯Êı¾İ²âÊÔ
 	//const char* sql4 = "select * from user";
 	//mysql.QueryData(sql4);
 	//mysql.PrintQueryRes();
 
-	//// é‡Šæ”¾mysqlèµ„æº
+	//// ÊÍ·Åmysql×ÊÔ´
 	//mysql.FreeConnect();
 
-	/// 2ã€æµ‹è¯•ç™»å½•åŠŸèƒ½
+	/// 2¡¢²âÊÔµÇÂ¼¹¦ÄÜ
 	//char userName[] = "jinye";
 	//char userPwd[] = "123";
 	//Login login;

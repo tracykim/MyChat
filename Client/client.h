@@ -1,10 +1,10 @@
-ï»¿#pragma once
+#pragma once
 //#include <winsock2.h>
 #include <stdio.h>
 #include <thread>
 #include <iostream>
 #include <conio.h>
-#include <ws2tcpip.h>//å®šä¹‰socklen_t
+#include <ws2tcpip.h>//¶¨Òåsocklen_t
 #include "MySQLManager.h"
 #include "login.h"
 #include "user.h"
@@ -22,7 +22,7 @@ public:
 	void printFrinedList();
 	void printGroupList();
 private:
-	int m_handle; //å®¢æˆ·ç«¯å¥—æ¥å­—ï¼ˆå¥æŸ„ï¼‰
+	int m_handle; //¿Í»§¶ËÌ×½Ó×Ö£¨¾ä±ú£©
 	int writing;
 	sockaddr_in  serverAddr;
 	Login m_login;
@@ -31,4 +31,8 @@ private:
 	bool m_quit = false;
 	std::vector<string> m_friendList;
 	std::vector<string> m_groupList;
+
+	void splitData(int dataType, const char* fromName, const char* toName, const char* data, char* sendbuf);
+	void processData(char& dataType, char fromName[128], char toName[128], char data[1024], const char* buf);
+
 };
