@@ -31,15 +31,11 @@ public:
 private:
 	int listener;//监听套接字
 	sockaddr_in  serverAddr;//IPV4的地址方式
-	//std::vector <int> socksArr;//存放创建的套接字
-	//std::vector <std::string> m_userName;//套接字对应的用户名
-	//std::vector<bool> m_recvLogins;
 	std::vector<ClientInfo> m_clientInfo;
 	std::unordered_map<std::string, int> m_name_arr; //用户名-套接字
 
 	UseDB m_db;
 	std::vector<ClientInfo> m_groupList; // 群聊列表
-	//void processData(char& dataType, char fromName[128], char toName[128], char data[1024], const char* buf);
 	bool sendUser(char message[1024], std::string toClinetName, int messageLen);
 	bool sendGroupMessage(char message[1024], int messageLen, char groupName[128], std::string fromClinetName);
 };

@@ -84,16 +84,8 @@ void server::process()
 					//返回一个用户的套接字
 					int clientfd = accept(listener, (struct sockaddr*)&client_addr, &clntSz);
 					//添加用户，服务器上显示消息，并通知用户连接成功
-					//socksArr.push_back(clientfd);
-					//m_recvLogins.push_back(false);
 					m_clientInfo.emplace_back(clientfd, "", false);
 					printf("connect sucessfully\n");
-					
-					//char ID[1024];
-					//sprintf(ID, "You ID is: %d and ", clientfd);
-					//char buf[30] = "welcome joint the chatroom! \n";
-					//strcat(ID, buf);
-					//send(clientfd, ID, sizeof(ID) - 1, 0);//减去最后一个'/0'
 				}
 				if (i != 0 && FD_ISSET(m_clientInfo[i].clientArr, &fds)) //socksArr[i]
 				{
@@ -105,9 +97,6 @@ void server::process()
 					int size = recv(m_clientInfo[i].clientArr, buf, sizeof(buf) - 1, 0);
 					if (size > 0 && !m_clientInfo[i].recvLogin) // 未收到第i个客户端登录信息
 					{				
-						//m_name_arr.insert({ buf, socksArr[i] });
-						//m_recvLogins[i] = true;
-						
 						m_name_arr.insert({ buf, m_clientInfo[i].clientArr });
 						m_clientInfo[i].clientName = buf;
 						m_clientInfo[i].recvLogin = true;
@@ -180,35 +169,6 @@ void server::process()
 		}
 	}
 }
-
-/*
-void server::processData(char& dataType, char fromName[128], char toName[128], char data[1024], const char* buf)
-{
-	dataType = buf[0];
-	int i = 2, p = 0, q = 0, r=0;
-	// 填充From
-	while (buf[i] != '\0' && buf[i] != ' ')
-	{
-		fromName[p++] = buf[i++];
-	}
-	fromName[p] = '\0';
-	i++;
-
-	// 填充To
-	while (buf[i] != '\0' && buf[i] != ' ')
-	{
-		toName[q++] = buf[i++];
-	}
-	toName[q] = '\0';
-	i++;
-
-	// 填充data
-	while (buf[i] != '\0')
-	{
-		data[r++] = buf[i++];
-	}
-	data[r] = '\0';
-}*/
 
 bool server::sendUser(char message[1024], std::string toClinetName, int messageLen)
 {

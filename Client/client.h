@@ -34,7 +34,4 @@ private:
 	bool m_quit = false;
 	std::vector<string> m_friendList;
 	std::vector<string> m_groupList;
-
-	//void splitData(int dataType, const char* fromName, const char* toName, const char* data, char* sendbuf);
-	//void processData(char& dataType, char fromName[128], char toName[128], char data[1024], const char* buf);
 };

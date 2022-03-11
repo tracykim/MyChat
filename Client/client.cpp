@@ -45,7 +45,7 @@ void client::process()
 	init();
 
 	/// 登录
-	printf("欢迎来到我的聊天室，请登录.\n");
+	printf("欢迎来到我的聊天室，请登录（包含注册过程）.\n");
 	printf("用户名：");
 	scanf("%s", &m_user.m_userName);
 	printf("密码：");
@@ -343,41 +343,3 @@ void client::printGroupList()
 	}
 	printf("\n");
 }
-
-/*void client::splitData(int dataType, const char* fromName, const char* toName, const char* data, char* sendbuf)
-{
-	sprintf(sendbuf, "%d ", dataType);
-	strcat(sendbuf, fromName);
-	strcat(sendbuf, " ");
-	strcat(sendbuf, toName);
-	strcat(sendbuf, " ");
-	strcat(sendbuf, data);
-}
-
-void client::processData(char& dataType, char fromName[128], char toName[128], char data[1024], const char* buf)
-{
-	dataType = buf[0];
-	int i = 2, p = 0, q = 0, r = 0;
-	// 填充From
-	while (buf[i] != '\0' && buf[i] != ' ')
-	{
-		fromName[p++] = buf[i++];
-	}
-	fromName[p] = '\0';
-	i++;
-
-	// 填充To
-	while (buf[i] != '\0' && buf[i] != ' ')
-	{
-		toName[q++] = buf[i++];
-	}
-	toName[q] = '\0';
-	i++;
-
-	// 填充data
-	while (buf[i] != '\0')
-	{
-		data[r++] = buf[i++];
-	}
-	data[r] = '\0';
-}*/
