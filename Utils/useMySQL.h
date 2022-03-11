@@ -5,10 +5,10 @@
 #include "mysql_config.h"
 
 using namespace std;
-class Login{
+class UseDB {
 public:
-	Login();
-	~Login();
+	UseDB();
+	~UseDB();
 	bool loginSuccess(char* userName, char* userPwd);
 	void QueryFriendList(char* userName);
 	void QueryFriendList(char* userName, std::vector<string>& friendList);
@@ -29,5 +29,5 @@ private:
 	MySQLManager m_sqlManager;
 	ConnectionInfo info;
 	char m_query[1024];
-	
+
 };

@@ -15,25 +15,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="server.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="mainServer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\useMySQL.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\MySQLManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Utils\dataProcess.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="server.h">
+    <ClInclude Include="MySQLManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="mysql_config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="useMySQL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="server_config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="user.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="dataProcess.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MySQLManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="useMySQL.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="dataProcess.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

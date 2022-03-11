@@ -91,6 +91,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -118,6 +119,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Utils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -127,19 +129,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Utils\dataProcess.cpp" />
+    <ClCompile Include="..\Utils\MySQLManager.cpp" />
+    <ClCompile Include="..\Utils\useMySQL.cpp" />
     <ClCompile Include="client.cpp" />
-    <ClCompile Include="login.cpp" />
     <ClCompile Include="mainClient.cpp" />
-    <ClCompile Include="MySQLManager.cpp" />
     <ClCompile Include="testMySQLManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="client.h" />
-    <ClInclude Include="login.h" />
-    <ClInclude Include="mysql_config.h" />
-    <ClInclude Include="MySQLManager.h" />
-    <ClInclude Include="server_config.h" />
-    <ClInclude Include="user.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

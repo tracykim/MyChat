@@ -10,10 +10,6 @@ server::server()
 	serverAddr.sin_family = PF_INET;
 	serverAddr.sin_port = SERVER_PORT;
 	serverAddr.sin_addr.s_addr = inet_addr(SERVER_HOST);//将字符串类型转换uint32_t
-
-	/*serverAddr.sin_family = AF_INET;
-	serverAddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
-	serverAddr.sin_port = SERVER_PORT;*/
 }
 //初始化函数，创建监听套接字，绑定端口，并进行监听
 void server::init()
@@ -36,8 +32,6 @@ void server::init()
 		exit(1);
 	}
 	listen(listener, 5);//listener这个套接字监听申请的链接，最大等待连接队列为5,等待accept()
-	//socksArr.push_back(listener);//将监听套接字加入套接字数组，数组内首个套接字就是服务器的套接字
-	//m_recvLogins.push_back(true); // 服务器不需要登陆
 	m_clientInfo.emplace_back(listener, "", true);
 }
 
@@ -62,7 +56,7 @@ void server::process()
 			FD_SET(m_clientInfo[i].clientArr, &fds);
 		}
 
-		struct timeval timeout = { 1,0 };//每个Select等待1秒
+		struct timeval timeout = { 1,0 };//Select超时时间：1秒
 		switch (select(0, &fds, NULL, NULL, &timeout))
 		{
 		case -1:     //select error
@@ -132,28 +126,7 @@ void server::process()
 					}
 					//若是没有掉线
 					else
-					{
-						//printf("clint %d says: %s \n", m_clientInfo[i].clientArr, buf);
-						//char info[1024]; // 说话的客户端名字
-						//sprintf(info, "client %d:", m_clientInfo[i].clientArr);
-						//strcat(info, buf);
-
-						//char toUserName[128], message[1024];
-						//memset(toUserName, '\0', sizeof(toUserName));
-						//memset(message, '\0', sizeof(message));
-						//getUserAndMessage(buf, toUserName, message);					
-
-						//if (m_name_arr.find(toUserName) != m_name_arr.end())
-						//{
-						//	char sendInfo[1024];
-						//	memset(sendInfo, '\0', sizeof(sendInfo));
-						//	// 找到发送者的名字
-						//	std::string fromUserName = m_clientInfo[i].clientName;
-						//	sprintf(sendInfo, "From %s：", fromUserName.c_str());
-						//	strcat(sendInfo, message);						
-						//	send(m_name_arr[toUserName], sendInfo, sizeof(sendInfo) - 1, 0);
-						//}
-
+					{				
 						if (buf[0] == '\0')
 							continue;
 						char dataType;
@@ -161,15 +134,14 @@ void server::process()
 						memset(fromName, '\0', sizeof(fromName));
 						memset(toName, '\0', sizeof(toName));
 						memset(data, '\0', sizeof(data));
-
 						processData(dataType, fromName, toName, data, buf);
+
 						char sendInfo[1024];
 						memset(sendInfo, '\0', sizeof(sendInfo));
 
 						switch (dataType)
 						{
 						case '0': // 0、加好友
-							//sprintf(sendInfo, "用户[%s]添加你为好友", fromName);
 							send(m_name_arr[toName], buf, sizeof(buf) - 1, 0);
 							break;
 						case '1': // 1、加群聊
@@ -177,27 +149,9 @@ void server::process()
 							sendGroupMessage(sendInfo, sizeof(sendInfo), toName, fromName);
 							break;
 						case '2': // 2、创建群聊
-							//sprintf(sendInfo, "用户[%s]拉你进入群聊[%s]：", fromName, toName);
 							sendGroupMessage(buf, sizeof(buf), toName, fromName);
-							//if (m_db.hasGroup(toName))
-							//{
-							//	// 查询群聊用户
-							//	std::vector<string> groupList;
-							//	m_db.QueryUserListInGroup(toName, groupList);
-							//	for (int i = 0; i < groupList.size(); i++)
-							//	{
-							//		if (groupList[i] != fromName)
-							//		{
-							//			if (m_name_arr.find(groupList[i]) != m_name_arr.end())
-							//			{											
-							//				send(m_name_arr[groupList[i]], buf, sizeof(buf) - 1, 0);
-							//			}
-							//		}
-							//	}
-							//}
 							break;
 						case '3': // 3、删除好友
-							//sprintf(sendInfo, "你被用户[%s]删除好友：", fromName);
 							send(m_name_arr[toName], buf, sizeof(buf) - 1, 0);
 							break;
 						case '4': // 4、删除群聊
@@ -205,34 +159,14 @@ void server::process()
 							sendGroupMessage(sendInfo, sizeof(sendInfo), toName, fromName);
 							break;
 						case '5': // 5、单聊
-						{
 							sprintf(sendInfo, "[%s]：", fromName);
 							strcat(sendInfo, data);
 							sendUser(sendInfo, toName, sizeof(sendInfo));
-							//sendUser(data, fromName, toName);
 							break;
-						}
 						case '6': // 6、群聊
 							sprintf(sendInfo, "[%s]-[%s]：", toName, fromName);
 							strcat(sendInfo, data);
 							sendGroupMessage(sendInfo, sizeof(sendInfo), toName, fromName);
-
-							//if (m_db.hasGroup(toName))
-							//{
-							//	// 查询群聊用户
-							//	std::vector<string> groupList;
-							//	m_db.QueryUserListInGroup(toName, groupList);
-							//	for (int i = 0; i < groupList.size(); i++)
-							//	{
-							//		if (groupList[i] != fromName)
-							//		{
-							//			if (m_name_arr.find(groupList[i]) != m_name_arr.end())
-							//			{											
-							//				send(m_name_arr[groupList[i]], sendInfo, sizeof(sendInfo) - 1, 0);
-							//			}
-							//		}
-							//	}
-							//}
 							break;
 						default:
 							break;
@@ -247,31 +181,7 @@ void server::process()
 	}
 }
 
-// 处理客户端发过来的消息
-/*void server::processMessage(const char* buf, int clinetIdx)
-{
-	char name[128], message[1024];
-	memset(name, '\0', sizeof(name));
-	memset(message, '\0', sizeof(message));
-	getUserAndMessage(buf, name, message);
-
-	// 不是用户名或当前用户不在线
-	if (!sendMessage(message, m_clientInfo[clinetIdx].clientName, name))
-	{
-		if (m_db.hasGroup(name)) // 如果发送的是群聊名，进行群聊
-		{
-			// 查询群聊用户
-			std::vector<string> groupList;
-			m_db.QueryUserListInGroup(name, groupList);
-			for (int i = 0; i < groupList.size(); i++)
-			{
-				if(groupList[i]!=m_clientInfo[clinetIdx].clientName)
-					sendMessage(message, name, m_clientInfo[clinetIdx].clientName, groupList[i]);
-			}
-		}
-	}
-}*/
-
+/*
 void server::processData(char& dataType, char fromName[128], char toName[128], char data[1024], const char* buf)
 {
 	dataType = buf[0];
@@ -298,36 +208,6 @@ void server::processData(char& dataType, char fromName[128], char toName[128], c
 		data[r++] = buf[i++];
 	}
 	data[r] = '\0';
-}
-/*
-// 给客户端发送消息（包含发送者）
-bool server::sendUser(char message[1024], std::string fromClinetName, std::string toClinetName)
-{
-	// 当前客户端是否在线在线
-	if (m_name_arr.find(toClinetName) != m_name_arr.end())
-	{
-		char sendInfo[1024];
-		//memset(sendInfo, '\0', sizeof(sendInfo));
-		sprintf(sendInfo, "[%s]：", fromClinetName.c_str());
-		strcat(sendInfo, message);
-		send(m_name_arr[toClinetName], sendInfo, sizeof(sendInfo) - 1, 0);
-		return true;
-	}
-	return false;
-}
-
-bool server::sendUser(std::string message, std::string toClinetName)
-{
-	// 当前客户端是否在线在线
-	if (m_name_arr.find(toClinetName) != m_name_arr.end())
-	{
-		//char info[1024];
-		//strcpy(info, message.c_str());
-		//send(m_name_arr[toClinetName], info, sizeof(info) - 1, 0);
-		send(m_name_arr[toClinetName], message.c_str(), sizeof(message) - 1, 0);
-		return true;
-	}
-	return false;
 }*/
 
 bool server::sendUser(char message[1024], std::string toClinetName, int messageLen)
@@ -340,18 +220,6 @@ bool server::sendUser(char message[1024], std::string toClinetName, int messageL
 	}
 	return false;
 }
-
-// 给客户端发送消息（不包含发送者）
-/*bool server::sendUserByGroup(char message[1024], std::string toClinetName)
-{
-	// 当前客户端是否在线在线
-	if (m_name_arr.find(toClinetName) != m_name_arr.end())
-	{
-		send(m_name_arr[toClinetName], message, sizeof(message)-1, 0);
-		return true;
-	}
-	return false;
-}*/
 
 // 给群聊中的每个客户端发消息 TODO 这个函数调用有问题，展开来写没问题
 bool server::sendGroupMessage(char message[1024], int messageLen, char groupName[128], std::string fromClinetName)
@@ -370,22 +238,3 @@ bool server::sendGroupMessage(char message[1024], int messageLen, char groupName
 	}
 	return false;
 }
-
-// 根据空格分隔字符串
-//void getUserAndMessage(const char buf[1024], char userName[128], char message[128])
-//{
-//	int i = 0, p = 0, q=0;
-//	// 填充用户名
-//	while(buf[i]!='\0' && buf[i] != ' ')
-//	{
-//		userName[p++] = buf[i++];
-//	}
-//	userName[p] = '\0';
-//	i++;
-//	// 填充信息
-//	while (buf[i] != '\0')
-//	{
-//		message[q++] = buf[i++];
-//	}
-//	message[q] = '\0';
-//}

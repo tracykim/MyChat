@@ -1,6 +1,6 @@
 #include "client.h"
 #include "MySQLManager.h"
-#include "login.h"
+#include "useMySQl.h"
 #pragma comment(lib, "ws2_32.lib")  // Á´½Óµ½WS2_32.lib
 
 using namespace std;

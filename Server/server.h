@@ -1,7 +1,8 @@
 #pragma once
 //#include <Winsock2.h> 
-#include "login.h"
+#include "useMySQL.h"
 #include "server_config.h"
+#include "dataProcess.h"
 #include <stdio.h>
 #include <vector>
 #include <unordered_map>
@@ -36,16 +37,9 @@ private:
 	std::vector<ClientInfo> m_clientInfo;
 	std::unordered_map<std::string, int> m_name_arr; //用户名-套接字
 
-	Login m_db;
+	UseDB m_db;
 	std::vector<ClientInfo> m_groupList; // 群聊列表
-	//void processMessage(const char* buf, int clinetIdx);
-	void processData(char& dataType, char fromName[128], char toName[128], char data[1024], const char* buf);
-
-	//bool sendUser(char message[1024], std::string fromClinetName, std::string toClinetName);
-	//bool sendUser(std::string message, std::string toClinetName);
+	//void processData(char& dataType, char fromName[128], char toName[128], char data[1024], const char* buf);
 	bool sendUser(char message[1024], std::string toClinetName, int messageLen);
-
-	//bool sendUserByGroup(char message[1024], std::string toClinetName);
 	bool sendGroupMessage(char message[1024], int messageLen, char groupName[128], std::string fromClinetName);
-
 };
