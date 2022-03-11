@@ -41,8 +41,11 @@ private:
 	//void processMessage(const char* buf, int clinetIdx);
 	void processData(char& dataType, char fromName[128], char toName[128], char data[1024], const char* buf);
 
-	bool sendUser(char message[1024], std::string fromClinetName, std::string toClinetName);
-	bool sendUserByGroup(char message[1024], char groupName[128], std::string fromClinetName, std::string toClinetName);
-	bool sendGroupMessage(char message[1024], char groupName[128], std::string fromClinetName);
+	//bool sendUser(char message[1024], std::string fromClinetName, std::string toClinetName);
+	//bool sendUser(std::string message, std::string toClinetName);
+	bool sendUser(char message[1024], std::string toClinetName, int messageLen);
+
+	//bool sendUserByGroup(char message[1024], std::string toClinetName);
+	bool sendGroupMessage(char message[1024], int messageLen, char groupName[128], std::string fromClinetName);
 
 };
